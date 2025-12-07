@@ -1,0 +1,65 @@
+CREATE TABLE IF NOT EXISTS endereco (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    cep CHAR(8) NOT NULL,
+    uf CHAR(2) NOT NULL,
+    bairro VARCHAR(100) NOT NULL,
+    rua VARCHAR(150) NOT NULL,
+    numero VARCHAR(10) NOT NULL,
+    complemento VARCHAR(50) NULL
+);
+
+CREATE TABLE IF NOT EXISTS telefone (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ddd CHAR(2) NOT NULL,
+    telefone VARCHAR(9) NOT NULL, -- se começar com 9 ou não
+    CONSTRAINT ddd_telefone UNIQUE (ddd, telefone)
+);
+
+CREATE TABLE IF NOT EXISTS usuario (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    senha VARCHAR(60) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS admin (
+    id_usuario INTEGER PRIMARY KEY,
+    cnpj CHAR(14) NOT NULL UNIQUE,
+    FOREIGN KEY (id_usuario) REFERENCES usuario (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS doador (
+    id_usuario INTEGER PRIMARY KEY,
+    cpf CHAR(11) NOT NULL UNIQUE,
+    id_telefone INTEGER NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES usuario (id) ON DELETE CASCADE,
+    FOREIGN KEY (id_telefone) REFERENCES telefone (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS favorecido (
+    id_usuario INTEGER PRIMARY KEY,
+    cpf CHAR(11) NOT NULL UNIQUE,
+    id_telefone INTEGER NOT NULL,
+    id_endereco INTEGER NOT NULL,
+    FOREIGN KEY (id_usuario) REFERENCES usuario (id) ON DELETE CASCADE,
+    FOREIGN KEY (id_telefone) REFERENCES telefone (id) ON DELETE CASCADE,
+    FOREIGN KEY (id_endereco) REFERENCES endereco (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS doacao (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    descricao VARCHAR(50) NOT NULL,
+    tipo VARCHAR(50) NOT NULL,
+    qntd INTEGER NOT NULL,
+    id_doador INTEGER NOT NULL,
+    FOREIGN KEY (id_doador) REFERENCES doador (id_usuario) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS produto (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    descricao VARCHAR(50) NOT NULL,
+    tipo VARCHAR(50) NOT NULL,
+    qntd INTEGER NOT NULL,
+    id_favorecido INTEGER NOT NULL,
+    FOREIGN KEY (id_favorecido) REFERENCES favorecido (id_usuario) ON DELETE CASCADE
+);
