@@ -21,11 +21,12 @@ class Doacao:
     def __str__(self): return f"{self.__id} - {self.__descricao} - {self.__tipo} - {self.__qntd}"
 
 class Produto:
-    def __init__(self, i, d, t, q):
+    def __init__(self, i, d, t, q, i_f):
         self.set_id(i)
         self.set_descricao(d)
         self.set_tipo(t)
         self.set_qntd(q)
+        self.set_id_favorecido(i_f)
     def set_id(self, v): self.__id = v
     def set_descricao(self, v):
         if not v: raise ValueError('Descrição Inválida')
@@ -36,8 +37,10 @@ class Produto:
     def set_qntd(self, v):
         if not v: raise ValueError('Quantidade Inválida')
         self.__qntd = v
+    def set_id_favorecido(self, v): self.__id_favorecido = v
     def get_id(self): return self.__id
     def get_descricao(self): return self.__descricao
     def get_tipo(self): return self.__tipo
     def get_qntd(self): return self.__qntd
-    def __str__(self): return f"{self.__id} - {self.__descricao} - {self.__tipo} - {self.__qntd}"
+    def get_id_favorecido(self): return self.__id_favorecido
+    def __str__(self): return f"{self.__id} - {self.__descricao} - {self.__tipo} - {self.__qntd} - {self.__id_favorecido}"

@@ -13,7 +13,7 @@ class BancoDeDados:
             self.__cursor.execute(comando)
         self.__conexao.commit()
 
-    # exeecuta comandos SQL que retornam dados
+    # exeecuta comandos SQL que retornam dado   s
     def buscar(self, comando, parametros=None):
         if parametros:
             self.__cursor.execute(comando, parametros)
