@@ -15,7 +15,18 @@ class ProdutoDAO:
 
 
     def listar_produto():
-        pass
+        comando = "SELECT id, nome, categoria FROM produto;"
+        linha = self.__banco_dados.buscar(comando)
+
+        lista_produtos = []
+
+        for id, nome, categoria, quantidade in linhas:
+            lista.append(Produto(
+                id = id
+                nome = nome
+                categoria = categoria
+                quantidade = quantidade
+            ))
 
     def listar_id_produto():
         pass

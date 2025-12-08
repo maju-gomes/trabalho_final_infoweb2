@@ -1,43 +1,43 @@
-class Doacao:
-    def __init__(self, i, d, t, q):
-        self.set_id(i)
-        self.set_descricao(d)
-        self.set_tipo(t)
-        self.set_qntd(q)
-    def set_id(self, v): self.__id = v
-    def set_descricao(self, v):
-        if not v: raise ValueError('Descrição Inválida')
-        self.__descricao = v
-    def set_tipo(self, v):
-        if not v: raise ValueError('Tipo Inválido')
-        self.__tipo = v
-    def set_qntd(self, v):
-        if not v: raise ValueError('Quantidade Inválida')
-        self.__qntd = v
-    def get_id(self): return self.__id
-    def get_descricao(self): return self.__descricao
-    def get_tipo(self): return self.__tipo
-    def get_qntd(self): return self.__qntd
-    def __str__(self): return f"{self.__id} - {self.__descricao} - {self.__tipo} - {self.__qntd}"
+from database import BancoDeDados
+from model.produto_produto import Produto
 
-class Produto:
-    def __init__(self, i, d, t, q):
-        self.set_id(i)
-        self.set_descricao(d)
-        self.set_tipo(t)
-        self.set_qntd(q)
-    def set_id(self, v): self.__id = v
-    def set_descricao(self, v):
-        if not v: raise ValueError('Descrição Inválida')
-        self.__descricao = v
-    def set_tipo(self, v):
-        if not v: raise ValueError('Tipo Inválido')
-        self.__tipo = v
-    def set_qntd(self, v):
-        if not v: raise ValueError('Quantidade Inválida')
-        self.__qntd = v
-    def get_id(self): return self.__id
-    def get_descricao(self): return self.__descricao
-    def get_tipo(self): return self.__tipo
-    def get_qntd(self): return self.__qntd
-    def __str__(self): return f"{self.__id} - {self.__descricao} - {self.__tipo} - {self.__qntd}"
+class ProdutoDAO:
+    def __init__(self, banco_dados: BancoDeDados):
+        self.__banco_dados = banco_dados
+
+    def criar_tabela(self):
+        comando = """
+        CREATE TABLE IF NOT EXISTS produto(
+            ...
+        );
+        """
+        self.__banco_dados.executar(comando)
+
+
+    def listar_produto():
+        comando = "SELECT id, nome, categoria FROM produto;"
+        linha = self.__banco_dados.buscar(comando)
+
+        lista_produtos = []
+
+        for id, nome, categoria, quantidade in linhas:
+            lista.append(Produto(
+                id = id
+                nome = nome
+                categoria = categoria
+                quantidade = quantidade
+            ))
+
+    def listar_id_produto():
+        pass
+
+    def inserir_produto(self, produto: Produto):
+        comando = "INSERT INTO produto (descricao, tipo, quantidade) VALUES (?, ?, ?);"
+        parametros = (produto.self.__descricao, produto.self.__tipo, produto.self.__quantidade)
+        self.__banco_dados.executar(comando, parametros)
+
+    def atualizar_produto():
+        pass
+
+    def excluir_produto():
+        pass
