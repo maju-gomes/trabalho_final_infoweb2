@@ -20,6 +20,13 @@ class ProdutoDAO:
 
     def listar_produto(self):
         comando = "SELECT id, descricao, tipo, qntd, id_favorecido FROM produto;"
+
+    # def buscar(self, comando, parametros=None):
+    #     if parametros:
+    #         self.__cursor.execute(comando, parametros)
+    #     else:
+    #         self.__cursor.execute(comando)
+    #     return self.__cursor.fetchall()
         linhas = self.__banco_dados.buscar(comando)
 
         lista_produtos = []
