@@ -12,7 +12,6 @@ CREATE TABLE IF NOT EXISTS telefone (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     ddd CHAR(2) NOT NULL,
     telefone VARCHAR(9) NOT NULL, -- se começar com 9 ou não
-    CONSTRAINT ddd_telefone UNIQUE (ddd, telefone)
 );
 
 CREATE TABLE IF NOT EXISTS usuario (
