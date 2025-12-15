@@ -18,30 +18,18 @@ class ProdutoDAO:
         """
         self.__banco_dados.executar(comando)
 
-    def listar_produto(self):
+    def listar_produtos(self):
         comando = "SELECT id, descricao, tipo, qntd, id_favorecido FROM produto;"
 
-    # def buscar(self, comando, parametros=None):
-    #     if parametros:
-    #         self.__cursor.execute(comando, parametros)
-    #     else:
-    #         self.__cursor.execute(comando)
-    #     return self.__cursor.fetchall()
         linhas = self.__banco_dados.buscar(comando)
 
         lista_produtos = []
 
         for id, descricao, tipo, qntd, id_favorecido in linhas:
-            lista_produtos.append(Produto(
-                id = id,
-                descricao = descricao,
-                tipo = tipo,
-                qntd = qntd,
-                id_favorecido = id_favorecido
-            ))
+            lista_produtos.append(Produto(id, descricao, tipo, qntd, id_favorecido))
         return lista_produtos
 
-    def listar_id_produto(self, id):
+    def buscar_produto_por_id(self, id):
         comando = """
         SELECT id, descricao, tipo, qntd, id_favorecido FROM produto WHERE id = ?;
         """
@@ -64,12 +52,7 @@ class ProdutoDAO:
         UPDATE produto SET descricao = ?, tipo = ?, qntd = ?, id_favorecido = ? WHERE id = ?;
         """
         parametros = (
-            produto.get_descricao(),
-            produto.get_tipo(),
-            produto.get_qntd(),
-            produto.get_id_favorecido(),
-            produto.get_id()
-            )
+            produto.get_descricao(), produto.get_tipo(), produto.get_qntd(), produto.get_id_favorecido(), produto.get_id())
         self.__banco_dados.executar(comando, parametros)
 
 

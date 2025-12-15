@@ -1,18 +1,17 @@
 from database import BancoDeDados
-from model.usuarios import Usuario
+from model.usuarios import Admin
 
-class UsuarioDAO:
+class AdminDAO:
     def __init__(self, banco_dados: BancoDeDados):
         self.__banco_dados = banco_dados
 
     def criar_tabela(self):
         comando = """
-            CREATE TABLE IF NOT EXISTS usuario (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                nome VARCHAR(100) NOT NULL,
-                email VARCHAR(255) NOT NULL UNIQUE,
-                senha VARCHAR(60) NOT NULL
-            );
+        CREATE TABLE IF NOT EXISTS admin (
+            id_usuario INTEGER PRIMARY KEY,
+            cnpj CHAR(14) NOT NULL UNIQUE,
+            FOREIGN KEY (id_usuario) REFERENCES usuario (id) ON DELETE CASCADE
+        );
         """
         self.__banco_dados.executar(comando)
 
@@ -22,8 +21,8 @@ class UsuarioDAO:
         linhas = self.__banco_dados.buscar(comando)
 
         lista_usuarios = []
-        for id, nome, email, senha in linhas:
-            lista_usuarios.append(Usuario(id, nome, email, senha))
+        for id_usuario, cnpj in linhas:
+            lista_usuarios.append(Admin(id_usuario, cnpj))
 
         return lista_usuarios
 

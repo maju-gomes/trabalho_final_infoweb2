@@ -19,7 +19,7 @@ class DoacaoDAO:
         """
         self.__banco_dados.executar(comando)
 
-    def listar_doacao():
+    def listar_doacao(self):
         comando = "SELECT id, descricao, tipo, qntd, id_doador FROM doacao;"
 
         linhas = self.__banco_dados.buscar(comando)
@@ -27,17 +27,11 @@ class DoacaoDAO:
         lista_doacoes = []
 
         for id, descricao, tipo, qntd, id_doador in linhas:
-            lista_doacoes.append(doacao(
-                id = id,
-                descricao = descricao,
-                tipo = tipo,
-                qntd = qntd,
-                id_doador = id_doador
-            ))
+            lista_doacoes.append(Doacao(id, descricao, tipo, qntd, id_doador))
 
         return lista_doacoes
 
-    def listar_id_doacao(self, id):
+    def buscar_doacao_por_id(self, id):
         comando = """
         SELECT id, descricao, tipo, qntd, id_doador FROM doacao WHERE id = ?;
         """
@@ -51,24 +45,18 @@ class DoacaoDAO:
 
     def inserir_doacao(self, doacao: Doacao):
         comando = """
-        INSERT INTO produto (descricao, tipo, qntd, id_doador) VALUES (?, ?, ?, ?);
+        INSERT INTO doacao (descricao, tipo, qntd, id_doador) VALUES (?, ?, ?, ?);
         """
-        parametros = (produto.get_descricao(), produto.get_tipo(), produto.get_qntd(), produto.get_id_doador())
+        parametros = (doacao.get_descricao(), doacao.get_tipo(), doacao.get_qntd(), doacao.get_id_doador())
         self.__banco_dados.executar(comando, parametros)
 
-    def atualizar_doacao():
+    def atualizar_doacao(self, doacao: Doacao):
         comando = """
-        UPDATE produto SET descricao = ?, tipo = ?, qntd = ?, id_doador = ? WHERE id = ?;
+        UPDATE doacao SET descricao = ?, tipo = ?, qntd = ?, id_doador = ? WHERE id = ?;
         """
-        parametros = (
-            produto.get_descricao(),
-            produto.get_tipo(),
-            produto.get_qntd(),
-            produto.get_id_doador(),
-            produto.get_id()
-            )
+        parametros = (doacao.get_descricao(), doacao.get_tipo(), doacao.get_qntd(), doacao.get_id_doador(), doacao.get_id())
         self.__banco_dados.executar(comando, parametros)
 
-    def excluir_doacao():
-        comando = "DELETE FROM produto WHERE id = ?;"
+    def excluir_doacao(self, id):
+        comando = "DELETE FROM doacao WHERE id = ?;"
         self.__banco_dados.executar(comando, (id,))
