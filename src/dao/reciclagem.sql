@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS endereco (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     cep CHAR(8) NOT NULL,
     uf CHAR(2) NOT NULL,
+    cidade VARCHAR(100) NOT NULL,
     bairro VARCHAR(100) NOT NULL,
     rua VARCHAR(150) NOT NULL,
     numero VARCHAR(10) NOT NULL,
@@ -11,7 +12,7 @@ CREATE TABLE IF NOT EXISTS endereco (
 CREATE TABLE IF NOT EXISTS telefone (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     ddd CHAR(2) NOT NULL,
-    telefone VARCHAR(9) NOT NULL, -- se começar com 9 ou não
+    numero VARCHAR(9) NOT NULL, -- se for de celular ou fixo
 );
 
 CREATE TABLE IF NOT EXISTS usuario (

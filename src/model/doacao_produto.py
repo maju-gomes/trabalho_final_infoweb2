@@ -1,9 +1,10 @@
 class Doacao:
-    def __init__(self, i, d, t, q):
+    def __init__(self, i, d, t, q, i_d):
         self.set_id(i)
         self.set_descricao(d)
         self.set_tipo(t)
         self.set_qntd(q)
+        self.set_id_doador(i_d)
 
     def set_id(self, v):
         self.__id = v
@@ -19,6 +20,8 @@ class Doacao:
         if not v:
             raise ValueError('Quantidade Inválida')
         self.__qntd = v
+    def set_id_doador(self, v):
+        self.__id_doador = v
 
     def get_id(self):
         return self.__id
@@ -28,8 +31,11 @@ class Doacao:
         return self.__tipo
     def get_qntd(self):
         return self.__qntd
+    def get_id_doador(self):
+        return self.__id_doador
+    
     def __str__(self):
-        return f"{self.__id} - {self.__descricao} - {self.__tipo} - {self.__qntd}"
+        return f"{self.__id} - {self.__descricao} - {self.__tipo} - {self.__qntd} - {self.__id_doador}"
 
 
 class Produto:
@@ -67,5 +73,6 @@ class Produto:
         return self.__qntd
     def get_id_favorecido(self):
         return self.__id_favorecido
+    
     def __str__(self):
         return f"{self.__id} - {self.__descricao} - {self.__tipo} - {self.__qntd} - {self.__id_favorecido}"

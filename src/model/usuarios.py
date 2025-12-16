@@ -28,6 +28,7 @@ class Usuario:
         return self.__email
     def get_senha(self):
         return self.__senha
+    
     def __str__(self):
         return f"{self.__id} - {self.__nome} - {self.__email} - {self.__senha}"
 
@@ -45,37 +46,57 @@ class Admin(Usuario):
 
     def get_cnpj(self):
         return self.__cnpj
+    
     def __str__(self):
         return f"{super().__str__()} - {self.__cnpj}"
 
 
 class Doador(Usuario):
-    def __init__(self, i, n, e, s, cpf):
+    def __init__(self, i, n, e, s, cpf, i_t):
         super().__init__(i, n, e, s)
         self.set_cpf(cpf)
+        self.set_id_telefone(i_t)
 
     def set_cpf(self, v):
         v = ''.join(c for c in v if c.isdigit())
         if not v or len(v) != 11:
             raise ValueError('CPF Inválido')
         self.__cpf = v
+    def set_id_telefone(self, v):
+        self.__id_telefone = v
+
     def get_cpf(self):
         return self.__cpf
+    def get_id_telefone(self):
+        return self.__id_telefone
+    
     def  __str__(self):
-        return f"{super().__str__()} - {self.__cpf}"
+        return f"{super().__str__()} - {self.__cpf} - {self.__id_telefone}"
 
 
 class Favorecido(Usuario):
-    def __init__(self, i, n, e, s, cpf):
+    def __init__(self, i, n, e, s, cpf, i_t, i_e):
         super().__init__(i, n, e, s)
         self.set_cpf(cpf)
+        self.set_id_telefone(i_t)
+        self.set_id_endereco(i_e)
 
     def set_cpf(self, v):
         v = ''.join(c for c in v if c.isdigit())
         if not v or len(v) != 11:
             raise ValueError('CPF Inválido')
         self.__cpf = v
+    def set_id_telefone(self, v):
+        self.__id_telefone = v
+    def set_id_endereco(self, v):
+        self.__id_endereco = v
+
     def get_cpf(self):
         return self.__cpf
+    def get_id_telefone(self):
+        return self.__id_telefone
+    def get_id_endereco(self):
+        return self.__id_endereco
+    
     def  __str__(self):
-        return f"{super().__str__()} - {self.__cpf}"
+        return f"{super().__str__()} - {self.__cpf} - {self.__id_telefone} - {self.__id_endereco}"
