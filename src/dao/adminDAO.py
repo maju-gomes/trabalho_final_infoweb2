@@ -16,46 +16,44 @@ class AdminDAO:
         self.__banco_dados.executar(comando)
 
 
-    def listar_usuarios(self):
-        comando = "SELECT id, nome, email, senha FROM usuario;"
+    def listar_admins(self):
+        comando = "SELECT id_usuario, cnpj FROM admin;"
         linhas = self.__banco_dados.buscar(comando)
 
-        lista_usuarios = []
+        lista_admins = []
         for id_usuario, cnpj in linhas:
-            lista_usuarios.append(Admin(id_usuario, cnpj))
+            lista_admins.append(Admin(id_usuario, cnpj))
 
-        return lista_usuarios
+        return lista_admins
 
 
-    def buscar_usuario_por_id(self, id):
+    def buscar_admin_por_id(self, id_usuario):
         comando = """
-            SELECT id, nome, email, senha FROM usuario WHERE id = ?;
+            SELECT id_usuario, cnpj FROM admin WHERE id_usuario = ?;
         """
-        linhas = self.__banco_dados.buscar(comando, (id,))
-        # caso n haja linhas com esse id
+        linhas = self.__banco_dados.buscar(comando, (id_usuario,))
         if not linhas:
             return None
-        id, nome, email, senha = linhas[0]
-        return Usuario(id, nome, email, senha)
+        id_usuario, cnpj = linhas[0]
+        return Admin(id_usuario, cnpj)
 
 
-    def inserir_usuario(self, usuario: Usuario):
+    def inserir_admin(self, admin: Admin):
         comando = """
-            INSERT INTO usuario (nome, email, senha) VALUES (?, ?, ?);
+            INSERT INTO admin (id_usuario, cnpj) VALUES (?, ?);
         """
-        parametros = (usuario.get_nome(), usuario.get_email(), usuario.get_senha())
+        parametros = (admin.get_id_usuario(), admin.get_cnpj())
         self.__banco_dados.executar(comando, parametros)
 
 
-    def atualizar_usuario(self, usuario: Usuario):
+    def atualizar_admin(self, admin: Admin):
         comando = """
-            UPDATE usuario SET nome = ?, email = ?, senha = ? WHERE id = ?;
+            UPDATE admin SET cnpj = ? WHERE id_usuario = ?;
         """
-        parametros = (usuario.get_nome(), usuario.get_email(), usuario.get_senha(), usuario.get_id()
-        )
+        parametros = (admin.get_cnpj(), admin.get_id_usuario())
         self.__banco_dados.executar(comando, parametros)
 
 
-    def excluir_usuario(self, id):
-        comando = """DELETE FROM usuario WHERE id = ?;"""   
-        self.__banco_dados.executar(comando, (id,))
+    def excluir_admin(self, id_usuario):
+        comando = """DELETE FROM admin WHERE id_usuario = ?;"""   
+        self.__banco_dados.executar(comando, (id_usuario,))
