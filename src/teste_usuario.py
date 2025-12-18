@@ -25,7 +25,8 @@ def lerSalvarObjUsuario():
 
     # usuario_dao.inserir_usuario(usuario1)
     # usuario_dao.inserir_usuario(usuario2)
-    usuario_dao.excluir_usuario(1)
+    usuario_dao.excluir_usuario(2)
+
     usuarios = usuario_dao.listar_usuarios()
     
     for u in usuarios:

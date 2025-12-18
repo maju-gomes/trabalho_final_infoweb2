@@ -1,5 +1,5 @@
 from database import BancoDeDados
-from model.doacao_doacao import Doacao
+from model.doacao_produto import Doacao
 
 class DoacaoDAO:
     def __init__(self, banco_dados: BancoDeDados):
