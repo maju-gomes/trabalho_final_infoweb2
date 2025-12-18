@@ -55,5 +55,7 @@ class AdminDAO:
 
 
     def excluir_admin(self, id_usuario):
-        comando = """DELETE FROM admin WHERE id_usuario = ?;"""   
+        comando = """
+        DELETE FROM admin WHERE id_usuario = ?;
+        """   
         self.__banco_dados.executar(comando, (id_usuario,))
