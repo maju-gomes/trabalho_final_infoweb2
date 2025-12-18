@@ -8,7 +8,7 @@ class BancoDeDados:
     # executa comandos SQL que não retornam dados
     def executar(self, comando, parametros=None):
         if parametros:
-            self.__cursor_execute(comando, parametros)
+            self.__cursor.execute(comando, parametros)
         else:
             self.__cursor.execute(comando)
         self.__conexao.commit()

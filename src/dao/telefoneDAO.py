@@ -15,7 +15,7 @@ class TelefoneDAO:
         """
         self.__banco_dados.executar(comando)
 
-    def listar_favorecidos(self):
+    def listar_telefones(self):
         comando = "SELECT id, ddd, numero FROM telefone"
         linhas = self.__banco_dados.buscar(comando)
 
@@ -27,7 +27,7 @@ class TelefoneDAO:
 
     def buscar_telefone_por_id(self, id):
         comando = """
-        SELECT id, ddd, numero FROM telefone;
+        SELECT id, ddd, numero FROM telefone WHERE id = ?;
         """
 
         linhas = self.__banco_dados.buscar(comando, (id,))
@@ -39,14 +39,22 @@ class TelefoneDAO:
 
     def inserir_telefone(self, telefone: Telefone):
         comando = """
-        INSERT INTO favorecido (id, ddd, numero) VALUES (?, ?, ?);
+        INSERT INTO telefone (ddd, numero) VALUES (?, ?);
         """
-        parametros = (telefone.get_id(), telefone.get_ddd(), telefone.get_numero())
-        self.__banco_dados.executar(comandos, parametros)
+        parametros = (telefone.get_ddd(), telefone.get_numero())
+        self.__banco_dados.executar(comando, parametros)
 
     def atualizar_telefone(self, telefone: Telefone):
         comando = """
-        UPDATE favorecido SET id = ?, ddd = ?, numero = ? WHERE id_usuario
+        UPDATE telefone SET ddd = ?, numero = ? WHERE id = ?
         """
 
-        # AJEITAR ISSO AQUI PQ UM TELEFONE0.1 -  0.*USUARIO
+        parametros = (telefone.get_ddd(), telefone.get_numero(), telefone.get_id())
+        self.__banco_dados.executar(comando, parametros)
+
+    def excluir_telefone(self, id):
+        comando = """
+        DELETE FROM telefone WHERE id = ?;
+        """
+        self.__banco_dados.executar(comando, (id,))
+
