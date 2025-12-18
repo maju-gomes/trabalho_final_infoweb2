@@ -23,8 +23,9 @@ def lerSalvarObjUsuario():
         "senha123"
     )
 
-    usuario_dao.inserir_usuario(usuario1)
-    usuario_dao.inserir_usuario(usuario2)
+    # usuario_dao.inserir_usuario(usuario1)
+    # usuario_dao.inserir_usuario(usuario2)
+    usuario_dao.excluir_usuario(1)
     usuarios = usuario_dao.listar_usuarios()
     
     for u in usuarios:
