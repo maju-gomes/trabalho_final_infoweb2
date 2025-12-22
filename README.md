@@ -1,5 +1,4 @@
-# NOME DO PROJETO
-**Recicle**
+# Recicle
 
 ## INTEGRANTES DO GRUPO
 - Ludmylla da Silva Oliveira  
