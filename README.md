@@ -29,5 +29,3 @@ Todo o código está na pasta `src`.
 - Python  
 - Astah  
 - Word  
-
-## ESTILIZAÇÃO DA PÁGINA
