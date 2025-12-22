@@ -52,7 +52,7 @@ class Admin(Usuario):
 
 
 class Doador(Usuario):
-    def __init__(self, i, n, e, s, cpf, i_t):
+    def __init__(self, i, n, e, s, cpf, t):
         super().__init__(i, n, e, s)
         self.set_cpf(cpf)
         self.set_id_telefone(i_t)
