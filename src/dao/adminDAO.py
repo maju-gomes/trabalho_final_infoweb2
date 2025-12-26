@@ -1,61 +1,47 @@
-from database import BancoDeDados
+from dao.dao import DAO
 from model.usuarios import Admin
 
-class AdminDAO:
-    def __init__(self, banco_dados: BancoDeDados):
-        self.__banco_dados = banco_dados
-
-    def criar_tabela(self):
+class AdminDAO(DAO):
+    @classmethod
+    def inserir(cls, obj):
+        cls.abrir()
         comando = """
-        CREATE TABLE IF NOT EXISTS admin (
-            id_usuario INTEGER PRIMARY KEY,
-            cnpj CHAR(14) NOT NULL UNIQUE,
-            FOREIGN KEY (id_usuario) REFERENCES usuario (id) ON DELETE CASCADE
-        );
+            INSERT INTO usuario (nome, email, senha) VALUES (?, ?, ?);
         """
-        self.__banco_dados.executar(comando)
+        cls.execute(comando, (obj.get_nome(), obj.get_email(), obj.get_senha()))
+        cls.fechar()
 
+    @classmethod
+    def listar(cls):
+        cls.abrir()
+        comando = "SELECT * FROM usuario"
+        cursor = cls.execute(comando)
+        linhas = cursor.fetchall()
+        objs = [Usuario(id, nome, email, senha) for (id, nome, email, senha) in linhas]
+        cls.fechar()
+        return objs
 
-    def listar_admins(self):
-        comando = "SELECT id_usuario, cnpj FROM admin;"
-        linhas = self.__banco_dados.buscar(comando)
+    @classmethod
+    def listar_id(cls, id):
+        cls.abrir()
+        comando = "SELECT * FROM usuario WHERE id = ?"
+        cursor = cls.execute(comando, (id,))
+        linha = cursor.fetchone()
+        obj = Usuario(*linha) if linha else None
+        cls.fechar()
+        return obj
 
-        lista_admins = []
-        for id_usuario, cnpj in linhas:
-            lista_admins.append(Admin(id_usuario, cnpj))
-
-        return lista_admins
-
-
-    def buscar_admin_por_id(self, id_usuario):
+    @classmethod
+    def atualizar(cls, obj):
         comando = """
-            SELECT id_usuario, cnpj FROM admin WHERE id_usuario = ?;
+            UPDATE usuario SET nome = ?, email = ?, senha = ? WHERE id = ?;
         """
-        linhas = self.__banco_dados.buscar(comando, (id_usuario,))
-        if not linhas:
-            return None
-        id_usuario, cnpj = linhas[0]
-        return Admin(id_usuario, cnpj)
+        cls.execute(comando, (obj.get_nome(), obj.get_email(), obj.get_senha(), obj.get_id()))
+        cls.fechar()
 
-
-    def inserir_admin(self, admin: Admin):
-        comando = """
-            INSERT INTO admin (id_usuario, cnpj) VALUES (?, ?);
-        """
-        parametros = (admin.get_id_usuario(), admin.get_cnpj())
-        self.__banco_dados.executar(comando, parametros)
-
-
-    def atualizar_admin(self, admin: Admin):
-        comando = """
-            UPDATE admin SET cnpj = ? WHERE id_usuario = ?;
-        """
-        parametros = (admin.get_cnpj(), admin.get_id_usuario())
-        self.__banco_dados.executar(comando, parametros)
-
-
-    def excluir_admin(self, id_usuario):
-        comando = """
-        DELETE FROM admin WHERE id_usuario = ?;
-        """   
-        self.__banco_dados.executar(comando, (id_usuario,))
+    @classmethod
+    def excluir(cls, obj):
+        cls.abrir()
+        comando = "DELETE FROM usuario WHERE id = ?"
+        cls.execute(comando, (obj.get_id(),))
+        cls.fechar()
