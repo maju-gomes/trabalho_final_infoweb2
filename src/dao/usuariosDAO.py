@@ -97,13 +97,53 @@ class AdminDAO(DAO):
         cls.execute(comando, (obj.get_id(),))
         cls.fechar()
 
-class Favorecido(DAO):
+# -----------------
+
+class FavorecidoDAO(DAO):
     @classmethod
     def inserir(cls, obj):
         id = UsuarioDAO.inserir(obj)
         cls.abrir()
         comando = """
-            INSERT INTO admin (id_usuario, cpf, id_telefone) VALUES (?, ?, ?);
         """
-        cls.execute(comando, (id, obj.get_cnpj(), ))
+        cls.execute(comando, (id, obj.get_cpf(),))
         cls.fechar()
+
+    @classmethod
+    def listar(cls):
+        pass
+
+    @classmethod
+    def listar_id(cls, id):
+        pass
+
+    @classmethod
+    def atualizar(cls, obj):
+        pass
+
+    @classmethod
+    def excluir(cls, obj):
+        pass
+
+# -----------------
+
+class DoadorDAO(DAO):
+    @classmethod
+    def inserir(cls, obj):
+        pass
+
+    @classmethod
+    def listar(cls):
+        pass
+
+    @classmethod
+    def listar_id(cls, id):
+        pass
+
+    @classmethod
+    def atualizar(cls, obj):
+        pass
+
+    @classmethod
+    def excluir(cls, obj):
+        pass

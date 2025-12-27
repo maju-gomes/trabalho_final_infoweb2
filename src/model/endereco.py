@@ -60,33 +60,3 @@ class Endereco:
     
     def __str__(self):
         return f"{self.__id} - {self.__cep} - {self.__uf} - {self.__cidade} - {self.__bairro} - {self.__rua} - {self.__numero} - {self.__complemento}"
-
-
-class Telefone:
-    def __init__(self, i, ddd, n):
-        self.set_id(i)
-        self.set_ddd(ddd)
-        self.set_numero(n)
-
-    def set_id(self, v):
-        self.__id = v
-    def set_ddd(self, v):
-        v = v.lstrip("0") or "0"
-        if len(v) != 2:
-            raise ValueError('DDD Inválido')
-        self.__ddd = v
-    def set_numero(self, v):
-        v = ''.join(c for c in v if c.isdigit())
-        if len(v) not in [8, 9] or (len(v) == 9 and v[0] != '9'):
-            raise ValueError('Número Inválido')
-        self.__numero = v
-
-    def get_id(self):
-        return self.__id
-    def get_ddd(self):
-        return self.__ddd
-    def get_numero(self):
-        return self.__numero
-    
-    def __str__(self):
-        return f"{self.__id} - {self.__ddd} - {self.__numero}"

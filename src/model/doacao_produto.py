@@ -36,7 +36,8 @@ class Doacao:
     
     def __str__(self):
         return f"{self.__id} - {self.__descricao} - {self.__tipo} - {self.__qntd} - {self.__id_doador}"
-
+    
+# -------------------------------
 
 class Produto:
     def __init__(self, i, d, t, q, i_f):

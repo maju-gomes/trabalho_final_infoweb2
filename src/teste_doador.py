@@ -1,6 +1,6 @@
 from database import BancoDeDados
 from dao.doadorDAO import DoadorDAO
-from dao.usuarioDAO import UsuarioDAO
+from dao.usuariosDAO import UsuarioDAO
 from dao.telefoneDAO import TelefoneDAO
 from model.usuarios import Doador
 
