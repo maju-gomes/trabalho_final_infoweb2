@@ -1,4 +1,4 @@
-from database import BancoDeDados
+from dao.database import BancoDeDados
 from dao.doadorDAO import DoadorDAO
 from dao.usuariosDAO import UsuarioDAO
 from dao.telefoneDAO import TelefoneDAO

@@ -1,4 +1,4 @@
-from database import BancoDeDados
+from dao.database import BancoDeDados
 from dao.usuarioDAO import UsuarioDAO
 from model.usuarios import Usuario
 

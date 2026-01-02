@@ -18,7 +18,7 @@ class Database:
         cursor = cls.conn.cursor()
         cursor.execute(sql, params or [])
         cls.conn.commit()
-        return cls.__cursor.lastrowid
+        return cursor
     
     @classmethod
     def criar_tabelas(cls):

@@ -1,15 +1,16 @@
-from dao.dao import DAO
+from dao.database import Database
 from model.usuarios import Usuario, Admin, Doador, Favorecido
 
-class UsuarioDAO(DAO):
+class UsuarioDAO(Database):
     @classmethod
     def inserir(cls, obj):
         cls.abrir()
         comando = """
-            INSERT INTO usuario (nome, email, senha) VALUES (?, ?, ?);
+            INSERT INTO usuario (nome, email, senha) VALUES (?, ?, ?)
         """
-        cursor = cls.execute(comando, (obj.get_nome(), obj.get_email(), obj.get_senha()))
-        id = cursor.lastrowid
+        parametros = (obj.get_nome(), obj.get_email(), obj.get_senha())
+        cursor = cls.execute(comando, parametros)
+        id = cursor.lastrowid 
         cls.fechar()
         return id
 
@@ -35,10 +36,12 @@ class UsuarioDAO(DAO):
 
     @classmethod
     def atualizar(cls, obj):
+        cls.abrir()
         comando = """
-            UPDATE usuario SET nome = ?, email = ?, senha = ? WHERE id = ?;
+            UPDATE usuario SET nome = ?, email = ?, senha = ? WHERE id = ?
         """
-        cls.execute(comando, (obj.get_nome(), obj.get_email(), obj.get_senha(), obj.get_id()))
+        parametros = (obj.get_nome(), obj.get_email(), obj.get_senha(), obj.get_id())
+        cls.execute(comando, parametros)
         cls.fechar()
 
     @classmethod
@@ -48,7 +51,7 @@ class UsuarioDAO(DAO):
         cls.execute(comando, (obj.get_id(),))
         cls.fechar()
 
-class AdminDAO(DAO):
+class AdminDAO(Database):
     @classmethod
     def inserir(cls, obj):
         id = UsuarioDAO.inserir(obj)
@@ -63,8 +66,9 @@ class AdminDAO(DAO):
     def listar(cls):
         cls.abrir()
         comando = """
-            SELECT usuario.id, usuario.nome, usuario.email, usuario.senha, admin.cnpj from usuario, admin
-            WHERE usuario.id = admin.id_usuario
+            SELECT usuario.id, usuario.nome, usuario.email, usuario.senha, admin.cnpj
+            FROM usuario
+            JOIN admin ON usuario.id = admin.id_usuario
         """
         cursor = cls.execute(comando)
         linhas = cursor.fetchall()
@@ -75,7 +79,10 @@ class AdminDAO(DAO):
     @classmethod
     def listar_id(cls, id):
         cls.abrir()
-        comando = "SELECT * FROM admin WHERE id_usuario = ?"
+        comando = """SELECT usuario.id, usuario.nome, usuario.email, usuario.senha, admin.cnpj 
+        FROM usuario 
+        JOIN admin ON usuario.id = admin.id_usuario
+        WHERE admin.id_usuario = ?"""
         cursor = cls.execute(comando, (id,))
         linha = cursor.fetchone()
         obj = Admin(*linha) if linha else None
@@ -84,10 +91,12 @@ class AdminDAO(DAO):
     
     @classmethod
     def atualizar(cls, obj):
+        cls.abrir()
         comando = """
             UPDATE admin SET cnpj = ? WHERE id_usuario = ?;
         """
-        cls.execute(comando, (obj.get_cnpj(), obj.get_id()))
+        parametros = (obj.get_cnpj(), obj.get_id())
+        cls.execute(comando, parametros)
         cls.fechar()
 
     @classmethod
@@ -97,13 +106,15 @@ class AdminDAO(DAO):
         cls.execute(comando, (obj.get_id(),))
         cls.fechar()
 
-# -----------------
+# ----------------- FALTA FavorecidoDAO e o DoadorDAO
 
-class FavorecidoDAO(DAO):
+class FavorecidoDAO(Database):
     @classmethod
     def inserir(cls, obj):
         id = UsuarioDAO.inserir(obj)
         cls.abrir()
+
+        # precisa do JOIN
         comando = """
         """
         cls.execute(comando, (id, obj.get_cpf(),))
@@ -127,7 +138,7 @@ class FavorecidoDAO(DAO):
 
 # -----------------
 
-class DoadorDAO(DAO):
+class DoadorDAO(Database):
     @classmethod
     def inserir(cls, obj):
         pass
