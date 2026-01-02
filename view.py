@@ -29,6 +29,9 @@ class UsuarioView:
 
     @staticmethod
     def criar_usuario_admin():
+        # USE
+        SELECT ... WHERE email = ? AND senha = ?
+
         for usuario in UsuarioView.listar_usuario():
             if usuario.get_email() == "admin": return
         UsuarioView.inserir_usuario("admin", "admin", "1234")
