@@ -35,46 +35,37 @@ class Database:
             );
         """)
         cls.execute("""
-            CREATE TABLE IF NOT EXISTS telefone (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                ddd CHAR(2) NOT NULL,
-                numero VARCHAR(9) NOT NULL, -- se for de celular ou fixo
-            );    
-        """)
-        cls.execute("""
             CREATE TABLE IF NOT EXISTS usuario (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 nome VARCHAR(100) NOT NULL,
                 email VARCHAR(255) NOT NULL UNIQUE,
                 senha VARCHAR(60) NOT NULL
-            );    
+            ); 
         """)
         cls.execute("""
             CREATE TABLE IF NOT EXISTS admin (
                 id_usuario INTEGER PRIMARY KEY,
                 cnpj CHAR(14) NOT NULL UNIQUE,
                 FOREIGN KEY (id_usuario) REFERENCES usuario (id) ON DELETE CASCADE
-            );    
+            );
         """)
         cls.execute("""
             CREATE TABLE IF NOT EXISTS doador (
                 id_usuario INTEGER PRIMARY KEY,
                 cpf CHAR(11) NOT NULL UNIQUE,
-                id_telefone INTEGER NOT NULL,
-                FOREIGN KEY (id_usuario) REFERENCES usuario (id) ON DELETE CASCADE,
-                FOREIGN KEY (id_telefone) REFERENCES telefone (id) ON DELETE CASCADE
-            );    
+                telefone CHAR(11) NOT NULL UNIQUE,
+                FOREIGN KEY (id_usuario) REFERENCES usuario (id) ON DELETE CASCADE
+            ); 
         """)
         cls.execute("""
             CREATE TABLE IF NOT EXISTS favorecido (
                 id_usuario INTEGER PRIMARY KEY,
                 cpf CHAR(11) NOT NULL UNIQUE,
-                id_telefone INTEGER NOT NULL,
+                telefone CHAR(11) NULL,
                 id_endereco INTEGER NOT NULL,
                 FOREIGN KEY (id_usuario) REFERENCES usuario (id) ON DELETE CASCADE,
-                FOREIGN KEY (id_telefone) REFERENCES telefone (id) ON DELETE CASCADE,
                 FOREIGN KEY (id_endereco) REFERENCES endereco (id) ON DELETE CASCADE
-            );    
+            );  
         """)
         cls.execute("""
             CREATE TABLE IF NOT EXISTS doacao (
@@ -84,7 +75,7 @@ class Database:
                 qntd INTEGER NOT NULL,
                 id_doador INTEGER NOT NULL,
                 FOREIGN KEY (id_doador) REFERENCES doador (id_usuario) ON DELETE CASCADE
-            );    
+            ); 
         """)
         cls.execute("""
             CREATE TABLE IF NOT EXISTS produto (

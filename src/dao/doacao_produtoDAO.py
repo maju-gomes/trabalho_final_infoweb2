@@ -1,7 +1,7 @@
-from dao.dao import DAO
+from dao.database import Database
 from model.doacao_produto import Doacao, Produto
 
-class DoacaoDAO(DAO):
+class DoacaoDAO(Database):
     @classmethod
     def inserir(cls, obj):
         pass
@@ -24,7 +24,7 @@ class DoacaoDAO(DAO):
 
 # -----------------
 
-class ProdutoDAO(DAO):
+class ProdutoDAO(Database):
     @classmethod
     def inserir(cls, obj):
         pass

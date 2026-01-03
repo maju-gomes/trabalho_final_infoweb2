@@ -9,12 +9,6 @@ CREATE TABLE IF NOT EXISTS endereco (
     complemento VARCHAR(50) NULL
 );
 
-CREATE TABLE IF NOT EXISTS telefone (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    ddd CHAR(2) NOT NULL,
-    numero VARCHAR(9) NOT NULL, -- se for de celular ou fixo
-);
-
 CREATE TABLE IF NOT EXISTS usuario (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nome VARCHAR(100) NOT NULL,
@@ -31,18 +25,16 @@ CREATE TABLE IF NOT EXISTS admin (
 CREATE TABLE IF NOT EXISTS doador (
     id_usuario INTEGER PRIMARY KEY,
     cpf CHAR(11) NOT NULL UNIQUE,
-    id_telefone INTEGER NOT NULL,
-    FOREIGN KEY (id_usuario) REFERENCES usuario (id) ON DELETE CASCADE,
-    FOREIGN KEY (id_telefone) REFERENCES telefone (id) ON DELETE CASCADE
+    telefone CHAR(11) NOT NULL UNIQUE,
+    FOREIGN KEY (id_usuario) REFERENCES usuario (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS favorecido (
     id_usuario INTEGER PRIMARY KEY,
     cpf CHAR(11) NOT NULL UNIQUE,
-    id_telefone INTEGER NOT NULL,
+    telefone CHAR(11) NULL,
     id_endereco INTEGER NOT NULL,
     FOREIGN KEY (id_usuario) REFERENCES usuario (id) ON DELETE CASCADE,
-    FOREIGN KEY (id_telefone) REFERENCES telefone (id) ON DELETE CASCADE,
     FOREIGN KEY (id_endereco) REFERENCES endereco (id) ON DELETE CASCADE
 );
 

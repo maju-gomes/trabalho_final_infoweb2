@@ -65,7 +65,8 @@ class Doador(Usuario):
             raise ValueError('CPF Inválido')
         self.__cpf = v
     def set_telefone(self, v):
-        if v != 9:
+        v = ''.join(c for c in v if c.isdigit())
+        if len(v) != 11:
             raise ValueError("Telefone inválido")
         self.__telefone = v
 
@@ -74,7 +75,7 @@ class Doador(Usuario):
     def get_telefone(self):
         return self.__telefone
     def  __str__(self):
-        return f"{super().__str__()} - {self.__cpf} - {self.__id_telefone}"
+        return f"{super().__str__()} - {self.__cpf} - {self.__telefone}"
 
 # -------------------------------
 
@@ -91,8 +92,10 @@ class Favorecido(Usuario):
             raise ValueError('CPF Inválido')
         self.__cpf = v
     def set_telefone(self, v):
-        if v != 9:
-            raise ValueError("Telefone inválido")
+        if v:
+            v = ''.join(c for c in v if c.isdigit())
+            if len(v) != 11:
+                raise ValueError("Telefone inválido")
         self.__telefone = v
     def set_id_endereco(self, v):
         self.__id_endereco = v

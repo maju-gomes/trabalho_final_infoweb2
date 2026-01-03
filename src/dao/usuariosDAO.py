@@ -55,11 +55,12 @@ class AdminDAO(Database):
     @classmethod
     def inserir(cls, obj):
         id = UsuarioDAO.inserir(obj)
+        obj.set_id(id)
         cls.abrir()
         comando = """
             INSERT INTO admin (id_usuario, cnpj) VALUES (?, ?);
         """
-        cls.execute(comando, (id, obj.get_cnpj()))
+        cls.execute(comando, (obj.get_id(), obj.get_cnpj()))
         cls.fechar()
 
     @classmethod
@@ -79,10 +80,12 @@ class AdminDAO(Database):
     @classmethod
     def listar_id(cls, id):
         cls.abrir()
-        comando = """SELECT usuario.id, usuario.nome, usuario.email, usuario.senha, admin.cnpj 
-        FROM usuario 
-        JOIN admin ON usuario.id = admin.id_usuario
-        WHERE admin.id_usuario = ?"""
+        comando = """
+            SELECT usuario.id, usuario.nome, usuario.email, usuario.senha, admin.cnpj 
+            FROM usuario 
+            JOIN admin ON usuario.id = admin.id_usuario
+            WHERE admin.id_usuario = ?
+        """
         cursor = cls.execute(comando, (id,))
         linha = cursor.fetchone()
         obj = Admin(*linha) if linha else None
@@ -92,6 +95,7 @@ class AdminDAO(Database):
     @classmethod
     def atualizar(cls, obj):
         cls.abrir()
+        UsuarioDAO.atualizar(obj)
         comando = """
             UPDATE admin SET cnpj = ? WHERE id_usuario = ?;
         """
@@ -102,59 +106,126 @@ class AdminDAO(Database):
     @classmethod
     def excluir(cls, obj):
         cls.abrir()
-        comando = "DELETE FROM admin WHERE id_usuario = ?"
+        comando = "DELETE FROM usuario WHERE id = ?"
         cls.execute(comando, (obj.get_id(),))
         cls.fechar()
 
-# ----------------- FALTA FavorecidoDAO e o DoadorDAO
+
+class DoadorDAO(Database):
+    @classmethod
+    def inserir(cls, obj):
+        id = UsuarioDAO.inserir(obj)
+        obj.set_id(id)
+        cls.abrir()
+        comando = """
+            INSERT INTO doador (id_usuario, cpf, telefone) VALUES (?, ?, ?);
+        """
+        cls.execute(comando, (obj.get_id(), obj.get_cpf(), obj.get_telefone()))
+        cls.fechar()
+
+    @classmethod
+    def listar(cls):
+        cls.abrir()
+        comando = """
+            SELECT usuario.id, usuario.nome, usuario.email, usuario.senha, doador.cpf, doador.telefone
+            FROM usuario
+            JOIN doador ON usuario.id = doador.id_usuario
+        """
+        cursor = cls.execute(comando)
+        linhas = cursor.fetchall()
+        objs = [Doador(id, nome, email, senha, cpf, telefone) for (id, nome, email, senha, cpf, telefone) in linhas]
+        cls.fechar()
+        return objs
+
+    @classmethod
+    def listar_id(cls, id):
+        cls.abrir()
+        comando = """
+            SELECT usuario.id, usuario.nome, usuario.email, usuario.senha, doador.cpf, doador.telefone
+            FROM usuario 
+            JOIN doador ON usuario.id = doador.id_usuario
+            WHERE doador.id_usuario = ?
+        """
+        cursor = cls.execute(comando, (id,))
+        linha = cursor.fetchone()
+        obj = Doador(*linha) if linha else None
+        cls.fechar()
+        return obj
+
+    @classmethod
+    def atualizar(cls, obj):
+        cls.abrir()
+        UsuarioDAO.atualizar(obj)
+        comando = """
+            UPDATE doador SET cpf = ?, telefone = ? WHERE id_usuario = ?;
+        """
+        parametros = (obj.get_cpf(), obj.get_telefone(), obj.get_id())
+        cls.execute(comando, parametros)
+        cls.fechar()
+
+    @classmethod
+    def excluir(cls, obj):
+        cls.abrir()
+        comando = "DELETE FROM usuario WHERE id = ?"
+        cls.execute(comando, (obj.get_id(),))
+        cls.fechar()
+
 
 class FavorecidoDAO(Database):
     @classmethod
     def inserir(cls, obj):
         id = UsuarioDAO.inserir(obj)
+        obj.set_id(id)
         cls.abrir()
-
-        # precisa do JOIN
         comando = """
+            INSERT INTO favorecido (id_usuario, cpf, telefone, id_endereco) VALUES (?, ?, ?, ?);
         """
-        cls.execute(comando, (id, obj.get_cpf(),))
+        cls.execute(comando, (obj.get_id(), obj.get_cpf(), obj.get_telefone(), obj.get_id_endereco()))
         cls.fechar()
 
     @classmethod
     def listar(cls):
-        pass
+        cls.abrir()
+        comando = """
+            SELECT usuario.id, usuario.nome, usuario.email, usuario.senha, favorecido.cpf, favorecido.telefone, favorecido.id_endereco
+            FROM usuario
+            JOIN favorecido ON usuario.id = favorecido.id_usuario
+        """
+        cursor = cls.execute(comando)
+        linhas = cursor.fetchall()
+        objs = [Favorecido(id, nome, email, senha, cpf, telefone, id_endereco) for (id, nome, email, senha, cpf, telefone, id_endereco) in linhas]
+        cls.fechar()
+        return objs
 
     @classmethod
     def listar_id(cls, id):
-        pass
+        cls.abrir()
+        comando = """
+            SELECT usuario.id, usuario.nome, usuario.email, usuario.senha, favorecido.cpf, favorecido.telefone, favorecido.id_endereco
+            FROM usuario 
+            JOIN favorecido ON usuario.id = favorecido.id_usuario
+            WHERE favorecido.id_usuario = ?
+        """
+        cursor = cls.execute(comando, (id,))
+        linha = cursor.fetchone()
+        obj = Favorecido(*linha) if linha else None
+        cls.fechar()
+        return obj
 
     @classmethod
     def atualizar(cls, obj):
-        pass
+        cls.abrir()
+        UsuarioDAO.atualizar(obj)
+        comando = """
+            UPDATE favorecido SET cpf = ?, telefone = ?, id_endereco = ? WHERE id_usuario = ?;
+        """
+        parametros = (obj.get_cpf(), obj.get_telefone(), obj.get_id_endereco(), obj.get_id())
+        cls.execute(comando, parametros)
+        cls.fechar()
 
     @classmethod
     def excluir(cls, obj):
-        pass
-
-# -----------------
-
-class DoadorDAO(Database):
-    @classmethod
-    def inserir(cls, obj):
-        pass
-
-    @classmethod
-    def listar(cls):
-        pass
-
-    @classmethod
-    def listar_id(cls, id):
-        pass
-
-    @classmethod
-    def atualizar(cls, obj):
-        pass
-
-    @classmethod
-    def excluir(cls, obj):
-        pass
+        cls.abrir()
+        comando = "DELETE FROM usuario WHERE id = ?"
+        cls.execute(comando, (obj.get_id(),))
+        cls.fechar()
