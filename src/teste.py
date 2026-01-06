@@ -1,7 +1,9 @@
 from dao.usuariosDAO import AdminDAO, DoadorDAO, FavorecidoDAO
 from dao.enderecoDAO import EnderecoDAO
+from dao.doacao_produtoDAO import DoacaoDAO, ProdutoDAO
 from model.usuarios import Admin, Doador, Favorecido
 from model.endereco import Endereco
+from model.doacao_produto import Doacao, Produto
 
 # end = Endereco(
 #     None,
@@ -47,3 +49,24 @@ from model.endereco import Endereco
 #     1
 # )
 # FavorecidoDAO.inserir(fav)
+
+
+# doacao = Doacao(
+#     None,
+#     'PC',
+#     'Tecnologia',
+#     2,
+#     1
+#     )
+
+# DoacaoDAO.inserir(doacao)
+
+
+produto = Produto(
+    None,
+    'Celular',
+    'Tecnologia',
+    4,
+    1
+)
+ProdutoDAO.inserir(produto)
