@@ -83,8 +83,20 @@ class DoadorView:
     @staticmethod
     def listar():
         d = DoadorDAO.listar()
-        d.sort(key=lambda obj: obj.get_nome())
-        return d
+
+        d.sort(key=lambda d:d.nome)
+
+        lista_d = []
+        for doador in d:
+            lista_d.append({
+                "id": doador.doador,
+                "nome": doador.nome,
+                "email": doador.email,
+                "cpf": doador.cpf,
+                "telefone": doador.telefone
+            })
+
+        return lista_d
     
     @staticmethod
     def listar_id(id):
