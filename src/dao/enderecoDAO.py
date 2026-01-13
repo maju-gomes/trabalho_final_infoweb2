@@ -3,7 +3,7 @@ from dao.database import Database
 
 class EnderecoDAO(Database):
     @classmethod
-    def inserir(cls, obj):
+    def inserir(cls, obj:Endereco):
         cls.abrir()
         comando = """
             INSERT INTO endereco (cep, uf, cidade, bairro, rua, numero, complemento) VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -35,7 +35,7 @@ class EnderecoDAO(Database):
         return obj
 
     @classmethod
-    def atualizar(cls, obj):
+    def atualizar(cls, obj:Endereco):
         cls.abrir()
         comando = """
             UPDATE endereco SET cep = ?, uf = ?, cidade = ?, bairro = ?, rua = ?, numero = ?, complemento = ? WHERE id = ?
@@ -45,7 +45,7 @@ class EnderecoDAO(Database):
         cls.fechar()
 
     @classmethod
-    def excluir(cls, obj):
+    def excluir(cls, obj:Endereco):
         cls.abrir()
         comando = "DELETE FROM endereco WHERE id = ?"
         cls.execute(comando, (obj.get_id(),))

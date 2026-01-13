@@ -3,12 +3,12 @@ from model.doacao_produto import Doacao, Produto
 
 class DoacaoDAO(Database):
     @classmethod
-    def inserir(cls, obj):
+    def inserir(cls, obj:Doacao):
         cls.abrir()
         comando = """
-            INSERT INTO doacao (descricao, tipo, quantidade, id_doador) VALUES (?, ?, ?, ?)
+            INSERT INTO doacao (descricao, tipo, quantidade_doada, quantidade_disponivel, situacao, id_doador) VALUES (?, ?, ?, ?, ?, ?)
         """
-        parametros = (obj.get_descricao(), obj.get_tipo(), obj.get_quantidade(), obj.get_id_doador())
+        parametros = (obj.get_descricao(), obj.get_tipo(), obj.get_quantidade_doada(), obj.get_quantidade_disponivel(), obj.get_situacao(), obj.get_id_doador())
         cursor = cls.execute(comando, parametros)
         id = cursor.lastrowid
         obj.set_id(id)
@@ -20,7 +20,7 @@ class DoacaoDAO(Database):
         comando = " SELECT * FROM doacao "
         cursor = cls.execute(comando)
         linhas = cursor.fetchall()
-        objs = [Doacao(id, descricao, tipo, quantidade, id_doador) for (id, descricao, tipo, quantidade, id_doador) in linhas]
+        objs = [Doacao(id, descricao, tipo, quantidade_doada, quantidade_disponivel, situacao, id_doador) for (id, descricao, tipo, quantidade_doada, quantidade_disponivel, situacao, id_doador) in linhas]
         cls.fechar()
         return objs
 
@@ -35,17 +35,17 @@ class DoacaoDAO(Database):
         return obj
 
     @classmethod
-    def atualizar(cls, obj):
+    def atualizar(cls, obj:Doacao):
         cls.abrir()
         comando = """
-            UPDATE doacao SET descricao = ?, tipo = ?, quantidade = ?, id_doador = ? WHERE id = ?
+            UPDATE doacao SET descricao = ?, tipo = ?, quantidade_doada = ?, quantidade_disponivel = ?, situacao = ?, id_doador = ? WHERE id = ?
         """
-        parametros = (obj.get_descricao(), obj.get_tipo(), obj.get_quantidade(), obj.get_id_doador(), obj.get_id())
+        parametros = (obj.get_descricao(), obj.get_tipo(), obj.get_quantidade_doada(), obj.get_quantidade_disponivel(), obj.get_situacao(), obj.get_id_doador(), obj.get_id())
         cls.execute(comando, parametros)
         cls.fechar()
 
     @classmethod
-    def excluir(cls, obj):
+    def excluir(cls, obj:Produto):
         cls.abrir()
         comando = "DELETE FROM doacao WHERE id = ?"
         cls.execute(comando, (obj.get_id(),))
@@ -55,7 +55,7 @@ class DoacaoDAO(Database):
 
 class ProdutoDAO(Database):
     @classmethod
-    def inserir(cls, obj):
+    def inserir(cls, obj:Produto):
         cls.abrir()
         comando = """
             INSERT INTO produto (descricao, tipo, quantidade, id_favorecido) VALUES (?, ?, ?, ?)
@@ -87,7 +87,7 @@ class ProdutoDAO(Database):
         return obj
 
     @classmethod
-    def atualizar(cls, obj):
+    def atualizar(cls, obj:Produto):
         cls.abrir()
         comando = """
             UPDATE produto SET descricao = ?, tipo = ?, quantidade = ?, id_favorecido = ? WHERE id = ?
@@ -97,7 +97,7 @@ class ProdutoDAO(Database):
         cls.fechar()
 
     @classmethod
-    def excluir(cls, obj):
+    def excluir(cls, obj:Produto):
         cls.abrir()
         comando = "DELETE FROM produto WHERE id = ?"
         cls.execute(comando, (obj.get_id(),))

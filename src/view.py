@@ -237,18 +237,13 @@ class EnderecoView:
 class DoacaoView:
     @staticmethod
     def inserir(descricao, tipo, qntd, id_doador):
-        d = Doacao(None, descricao, tipo, qntd, id_doador)
+        d = Doacao(None, descricao, tipo, qntd, qntd, None, id_doador)
         DoacaoDAO.inserir(d)
 
     @staticmethod
     def listar():
-        doacoes = DoacaoDAO.listar()
-        doacoes.sort(key=lambda obj:obj.get_descricao())
-
-    @staticmethod
-    def listar_resumido():
         d = DoacaoDAO.listar()
-        d.sort(key=lambda obj: obj.get_descricao())
+        d.sort(key=lambda obj:obj.get_descricao())
         return d
     
     @staticmethod
@@ -256,25 +251,50 @@ class DoacaoView:
         return DoacaoDAO.listar_id(id)
     
     @staticmethod
-    def atualizar(id, descricao, tipo, qntd, id_doador):
-        d = Doacao(id, descricao, tipo, qntd, id_doador)
+    def atualizar(id, descricao, tipo, qntd_do, qntd_di, situacao, id_doador):
+        d = Doacao(id, descricao, tipo, qntd_do, qntd_di, situacao, id_doador)
         DoacaoDAO.atualizar(d)
 
     @staticmethod
     def excluir(id):
-        d = Doacao(id, 'None', 'None', 1, 'None')
+        d = Doacao(id, 'None', 'None', '1', '1', None, None)
         DoacaoDAO.excluir(d)
 
 class ProdutoView:
     @staticmethod
-    def inserir(descricao_doacao, qntd_doacao, descricao, tipo, qntd_produto, id_fav):
-        doacoes = []
-        qntds = 0
-        for d in DoacaoDAO.listar():
+    def inserir(descricao_doacao, qntd_doacao, descricao, tipo, qntd_produto):
+        doacoes: list[Doacao] = []
+        disp = 0
+        usado = 0
+        for d in DoacaoView.listar():
             if d.get_situacao() == None and d.get_descricao() == descricao_doacao:
-                doacoes.append({'id':d.get_id(), 'qntd':d.get_quantidade()})
-        while qntds !=
-        p = Produto(None, descricao, tipo, qntd_produto, id_fav)
+                doacoes.append(d)
+                disp += d.get_quantidade_disponivel()
+        if disp < qntd_doacao:
+            raise ValueError('Quantidade de Doações Indisponível')
+        for d in doacoes:
+            if usado >= qntd_doacao:
+                break
+            disponivel = d.get_quantidade_disponivel()
+            falta = qntd_doacao - usado
+            if disponivel <= falta:
+                usado += disponivel
+                nova_disp = 0
+                situacao = True
+            else:
+                usado += falta
+                nova_disp = disponivel - falta
+                situacao = None
+            DoacaoView.atualizar(
+                d.get_id(),
+                d.get_descricao(),
+                d.get_tipo(),
+                d.get_quantidade_doada(),
+                nova_disp,
+                situacao,
+                d.get_id_doador()
+            )
+        p = Produto(None, descricao, tipo, qntd_produto, None)
         ProdutoDAO.inserir(p)
 
     @staticmethod
