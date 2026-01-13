@@ -83,20 +83,8 @@ class DoadorView:
     @staticmethod
     def listar():
         d = DoadorDAO.listar()
-
-        d.sort(key=lambda d:d.nome)
-
-        lista_d = []
-        for doador in d:
-            lista_d.append({
-                "id": doador.doador,
-                "nome": doador.nome,
-                "email": doador.email,
-                "cpf": doador.cpf,
-                "telefone": doador.telefone
-            })
-
-        return lista_d
+        d.sort(key=lambda obj:obj.get_nome())
+        return d
     
     @staticmethod
     def listar_id(id):
@@ -134,7 +122,7 @@ class DoadorView:
 
 class FavorecidoView:
     @staticmethod
-    def inserir(nome, email, senha, cpf, tel, cep, uf, ci, b, r, n, co):
+    def inserir(nome, email, senha, cpf, tel, i_e):
         emails = [obj.get_email() for obj in UsuarioView.listar()]
         cpfs = [obj.get_cpf() for obj in DoadorView.listar()] + [obj.get_cpf() for obj in FavorecidoView.listar()]
         tels = [obj.get_telefone() for obj in DoadorView.listar()]
@@ -144,7 +132,6 @@ class FavorecidoView:
             raise ValueError('CPF já cadastrado')
         if tel in tels:
             raise ValueError('Telefone já cadastrado')
-        i_e = EnderecoView.inserir(cep, uf, ci, b, r, n, co)
         f = Favorecido(None, nome, email, senha, cpf, tel, i_e)
         FavorecidoDAO.inserir(f)
 
@@ -159,7 +146,7 @@ class FavorecidoView:
         return FavorecidoDAO.listar_id(id)
     
     @staticmethod
-    def atualizar(id, nome, email, senha, cpf, tel, cep, uf, ci, b, r, n, co):
+    def atualizar(id, nome, email, senha, cpf, tel, i_e):
         atual = FavorecidoDAO.listar_id(id)
         emails = [obj.get_email() for obj in UsuarioView.listar()]
         cpfs = [obj.get_cpf() for obj in DoadorView.listar()] + [obj.get_cpf() for obj in FavorecidoView.listar()]
@@ -173,7 +160,6 @@ class FavorecidoView:
         if tel != atual.get_telefone():
             if tel in tels:
                 raise ValueError('Telefone já cadastrado')
-        i_e = EnderecoView.atualizar(cep, uf, ci, b, r, n, co)
         f = Favorecido(id, nome, email, senha, cpf, tel, i_e)
         FavorecidoDAO.atualizar(f)
 
@@ -229,10 +215,9 @@ class EnderecoView:
     @staticmethod
     def excluir(id):
         ends = [obj.get_id_endereco() for obj in FavorecidoView.listar()]
-        if id in ends:
-            raise ValueError('Endereço vinculado a um usuário')
-        e = Endereco(id, '11111-111', 'NN', 'None', 'None', 'None', '11', None)
-        EnderecoDAO.excluir(e)
+        if id not in ends:
+            e = Endereco(id, '11111-111', 'NN', 'None', 'None', 'None', '11', None)
+            EnderecoDAO.excluir(e)
 
 class DoacaoView:
     @staticmethod
