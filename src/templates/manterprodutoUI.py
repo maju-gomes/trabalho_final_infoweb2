@@ -47,15 +47,15 @@ class MPUI:
     
     def atualizar():
         i_f = st.session_state['id_usuario']
-        doacoes = [d for d in ProdutoView.listar() if d.get_id_favorecido() == i_f and d.get_situacao() != 'Entregue']
-        if not doacoes:
+        produtos = [p for p in ProdutoView.listar() if p.get_id_favorecido() == i_f and p.get_situacao() != 'Entregue']
+        if not produtos:
             st.write('Nenhum produto solicitado')
         else:
             with st.form('upd_sol_produto'):
                 op = st.selectbox(
                     'Informe o produto',
-                    doacoes,
-                    format_func=lambda d:f"{d.get_descricao()} - {d.get_tipo()} ({d.get_quantidade()})",
+                    produtos,
+                    format_func=lambda p:f"{p.get_descricao()} - {p.get_tipo()} ({p.get_quantidade()})",
                     key='upd_sol_produto_op'
                 )
                 desc = st.text_input('Informe a descrição', op.get_descricao(), key='upd_sol_produto_desc')
@@ -65,9 +65,32 @@ class MPUI:
             if submit:
                 try:
                     id = op.get_id()
-                    ProdutoView.atualizar(id, desc, tipo, op.get_quantidade(), qntd, op.get_situacao(), i_f)
+                    ProdutoView.atualizar_solicitacao(id, desc, tipo, op.get_quantidade(), qntd, op.get_situacao(), i_f)
                     st.success('Solicitação atualizada com sucesso')
                 except ValueError as erro:
                     st.error(erro)
                 time.sleep(2)
-                st.rerun()        
+                st.rerun()
+    
+    def cancelar():
+        i_f = st.session_state['id_usuario']
+        produtos = [p for p in ProdutoView.listar() if p.get_id_favorecido() == i_f and p.get_situacao() != 'Entregue']
+        if not produtos:
+            st.write('Nenhum produto solicitado')
+        else:
+            with st.form('del_sol_produto'):
+                op = st.selectbox(
+                    'Informe o produto',
+                    produtos,
+                    format_func=lambda p:f"{p.get_descricao()} - {p.get_tipo()} ({p.get_quantidade()})",
+                    key='del_sol_produto_op'
+                )
+                submit = st.form_submit_button('Cancelar')
+            if submit:
+                try:
+                    ProdutoView.excluir(op.get_id(), op.get_situacao())
+                    st.success('Solicitação cancelada com sucesso')
+                except ValueError as erro:
+                    st.error(erro)
+                time.sleep(2)
+                st.rerun()

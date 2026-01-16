@@ -322,10 +322,7 @@ class ProdutoView:
         return ProdutoDAO.listar_id(id)
     
     @staticmethod
-    def atualizar(id_produto, descricao, tipo, qntd_primario, qntd_produto, situacao_produto, id_favorecido, descricao_doacao=None, qntd_doacao=None):
-        if situacao_produto
-        if qntd_primario != qntd_produto and situacao_produto == 'Em Estoque':
-            raise ValueError('Solicitação já atendida. Não é possível mudar a quantidade')
+    def atualizar(id_produto, descricao, tipo, qntd_produto, situacao_produto, id_favorecido, descricao_doacao=None, qntd_doacao=None):
         if descricao_doacao != None and qntd_doacao != None:
             doacoes: list[Doacao] = []
             disp = 0
@@ -362,8 +359,12 @@ class ProdutoView:
         ProdutoDAO.atualizar(p)
 
     @staticmethod
-    def excluir(id):
-        ProdutoDAO.excluir(id)
+    def atualizar_solicitacao(id_produto, descricao, tipo, qntd_primaria, qntd_nova, situacao, id_favorecido):
+        if situacao == 'Em Estoque' and qntd_primaria != qntd_nova:
+            raise ValueError('Solicitação já atendida. Não é possível mudar a quantidade')
+        if situacao == 'Em Entrega':
+            raise ValueError('Produto em rota de entrega')
+        ProdutoView.atualizar(id_produto, descricao, tipo, qntd_nova, situacao, id_favorecido)
 
     @staticmethod
     def atender_solicitacao(id_solicitacao):
@@ -424,3 +425,10 @@ class ProdutoView:
             'Em Entrega',
             id_fav
         )
+    @staticmethod
+    def excluir(id, situacao=None):
+        if situacao == 'Em Estoque':
+            raise ValueError('Solicitação já atendida')
+        if situacao == 'Em Entrega':
+            raise ValueError('Produto em rota de entrega')
+        ProdutoDAO.excluir(id)
