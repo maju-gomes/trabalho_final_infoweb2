@@ -45,8 +45,8 @@ class EnderecoDAO(Database):
         cls.fechar()
 
     @classmethod
-    def excluir(cls, obj:Endereco):
+    def excluir(cls, id):
         cls.abrir()
         comando = "DELETE FROM endereco WHERE id = ?"
-        cls.execute(comando, (obj.get_id(),))
+        cls.execute(comando, (id,))
         cls.fechar()

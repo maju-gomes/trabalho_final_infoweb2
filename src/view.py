@@ -14,8 +14,7 @@ class UsuarioView:
     
     @staticmethod
     def excluir(id):
-        u = Usuario(id, 'None', 'None@', 'None')
-        UsuarioDAO.excluir(u)
+        UsuarioDAO.excluir(id)
 
 class AdminView:
     @staticmethod
@@ -58,9 +57,16 @@ class AdminView:
         UsuarioView.excluir(id)
 
     @staticmethod
-    def autenticar(email, senha):
+    def autenticar(email_cnpj, senha):
+        email_cnpj = email_cnpj.strip()
+        cnpj = ''.join(c for c in email_cnpj if c.isdigit())
+        if cnpj:
+            for obj in AdminView.listar():
+                if cnpj == obj.get_cnpj() and obj.get_senha() == senha:
+                    return obj
+        email = email_cnpj.lower()
         for obj in AdminView.listar():
-            if obj.get_email() == email and obj.get_senha() == senha:
+            if email == obj.get_email() and obj.get_senha() == senha:
                 return obj
         return None
 
@@ -113,9 +119,16 @@ class DoadorView:
         UsuarioView.excluir(id)
 
     @staticmethod
-    def autenticar(email, senha):
+    def autenticar(email_cpf, senha):
+        email_cpf = email_cpf.strip()
+        cpf = ''.join(c for c in email_cpf if c.isdigit())
+        if cpf:
+            for obj in DoadorView.listar():
+                if cpf == obj.get_cpf() and obj.get_senha() == senha:
+                    return obj
+        email = email_cpf.lower()
         for obj in DoadorView.listar():
-            if obj.get_email() == email and obj.get_senha() == senha:
+            if email == obj.get_email() and obj.get_senha() == senha:
                 return obj
         return None
 
@@ -165,12 +178,29 @@ class FavorecidoView:
 
     @staticmethod
     def excluir(id):
-        UsuarioView.excluir(id)
+        pro =  [p for p in ProdutoView.listar() if p.get_id_favorecido() == id]
+        if pro:
+            for obj in pro:
+                if obj.get_situacao() in ['Solicitado', 'Entregue']:
+                    ProdutoView.excluir(obj.get_id())
+                elif obj.get_situacao() == 'Em Estoque':
+                    ProdutoView.atualizar(obj.get_id(), obj.get_descricao(), obj.get_tipo(), obj.get_quantidade(), None)
+                else:
+                    raise ValueError('Há produtos em rota de entrega a este favorecido')
+        UsuarioView.excluit(id)
+                
 
     @staticmethod
-    def autenticar(email, senha):
+    def autenticar(email_cpf, senha):
+        email_cpf = email_cpf.strip()
+        cpf = ''.join(c for c in email_cpf if c.isdigit())
+        if cpf:
+            for obj in FavorecidoView.listar():
+                if cpf == obj.get_cpf() and obj.get_senha() == senha:
+                    return obj
+        email = email_cpf.lower()
         for obj in FavorecidoView.listar():
-            if obj.get_email() == email and obj.get_senha() == senha:
+            if email == obj.get_email() and obj.get_senha() == senha:
                 return obj
         return None
     
@@ -216,13 +246,12 @@ class EnderecoView:
     def excluir(id):
         ends = [obj.get_id_endereco() for obj in FavorecidoView.listar()]
         if id not in ends:
-            e = Endereco(id, '11111-111', 'NN', 'None', 'None', 'None', '11', None)
-            EnderecoDAO.excluir(e)
+            EnderecoDAO.excluir(id)
 
 class DoacaoView:
     @staticmethod
-    def inserir(descricao, tipo, qntd, id_doador):
-        d = Doacao(None, descricao, tipo, qntd, qntd, None, id_doador)
+    def inserir(descricao, tipo, qntd, situacao, id_doador):
+        d = Doacao(None, descricao, tipo, qntd, qntd, situacao, id_doador)
         DoacaoDAO.inserir(d)
 
     @staticmethod
@@ -242,44 +271,44 @@ class DoacaoView:
 
     @staticmethod
     def excluir(id):
-        d = Doacao(id, 'None', 'None', '1', '1', None, None)
-        DoacaoDAO.excluir(d)
+        DoacaoDAO.excluir(id)
 
 class ProdutoView:
     @staticmethod
-    def inserir(descricao_doacao, qntd_doacao, descricao, tipo, qntd_produto):
-        doacoes: list[Doacao] = []
-        disp = 0
-        usado = 0
-        for d in DoacaoView.listar():
-            if d.get_situacao() == None and d.get_descricao() == descricao_doacao:
-                doacoes.append(d)
-                disp += d.get_quantidade_disponivel()
-        if disp < qntd_doacao:
-            raise ValueError('Quantidade de Doações Indisponível')
-        for d in doacoes:
-            if usado >= qntd_doacao:
-                break
-            disponivel = d.get_quantidade_disponivel()
-            falta = qntd_doacao - usado
-            if disponivel <= falta:
-                usado += disponivel
-                nova_disp = 0
-                situacao = True
-            else:
-                usado += falta
-                nova_disp = disponivel - falta
-                situacao = None
-            DoacaoView.atualizar(
-                d.get_id(),
-                d.get_descricao(),
-                d.get_tipo(),
-                d.get_quantidade_doada(),
-                nova_disp,
-                situacao,
-                d.get_id_doador()
-            )
-        p = Produto(None, descricao, tipo, qntd_produto, None)
+    def inserir(descricao, tipo, qntd_produto, situacao, id_favorecido, descricao_doacao=None, qntd_doacao=None):
+        if descricao_doacao != None and qntd_doacao != None:
+            doacoes: list[Doacao] = []
+            disp = 0
+            usado = 0
+            for d in DoacaoView.listar():
+                if d.get_situacao() == None and d.get_descricao() == descricao_doacao:
+                    doacoes.append(d)
+                    disp += d.get_quantidade_disponivel()
+            if disp < qntd_doacao:
+                raise ValueError('Quantidade de Doações Indisponível')
+            for d in doacoes:
+                if usado >= qntd_doacao:
+                    break
+                disponivel = d.get_quantidade_disponivel()
+                falta = qntd_doacao - usado
+                if disponivel <= falta:
+                    usado += disponivel
+                    nova_disp = 0
+                    situacao_doacao = 'Usada'
+                else:
+                    usado += falta
+                    nova_disp = disponivel - falta
+                    situacao_doacao = 'Em Estoque'
+                DoacaoView.atualizar(
+                    d.get_id(),
+                    d.get_descricao(),
+                    d.get_tipo(),
+                    d.get_quantidade_doada(),
+                    nova_disp,
+                    situacao_doacao,
+                    d.get_id_doador()
+                )
+        p = Produto(descricao, tipo, qntd_produto, situacao, id_favorecido)
         ProdutoDAO.inserir(p)
 
     @staticmethod
@@ -293,11 +322,105 @@ class ProdutoView:
         return ProdutoDAO.listar_id(id)
     
     @staticmethod
-    def atualizar(id, descricao, tipo, qntd, id_doador):
-        d = Produto(id, descricao, tipo, qntd, id_doador)
-        ProdutoDAO.atualizar(d)
+    def atualizar(id_produto, descricao, tipo, qntd_primario, qntd_produto, situacao_produto, id_favorecido, descricao_doacao=None, qntd_doacao=None):
+        if situacao_produto
+        if qntd_primario != qntd_produto and situacao_produto == 'Em Estoque':
+            raise ValueError('Solicitação já atendida. Não é possível mudar a quantidade')
+        if descricao_doacao != None and qntd_doacao != None:
+            doacoes: list[Doacao] = []
+            disp = 0
+            usado = 0
+            for d in DoacaoView.listar():
+                if d.get_situacao() == None and d.get_descricao() == descricao_doacao:
+                    doacoes.append(d)
+                    disp += d.get_quantidade_disponivel()
+            if disp < qntd_doacao:
+                raise ValueError('Quantidade de Doações Indisponível')
+            for d in doacoes:
+                if usado >= qntd_doacao:
+                    break
+                disponivel = d.get_quantidade_disponivel()
+                falta = qntd_doacao - usado
+                if disponivel <= falta:
+                    usado += disponivel
+                    nova_disp = 0
+                    situacao_doacao = 'Usada'
+                else:
+                    usado += falta
+                    nova_disp = disponivel - falta
+                    situacao_doacao = 'Em Estoque'
+                DoacaoView.atualizar(
+                    d.get_id(),
+                    d.get_descricao(),
+                    d.get_tipo(),
+                    d.get_quantidade_doada(),
+                    nova_disp,
+                    situacao_doacao,
+                    d.get_id_doador()
+                )
+        p = Produto(id_produto, descricao, tipo, qntd_produto, situacao_produto, id_favorecido)
+        ProdutoDAO.atualizar(p)
 
     @staticmethod
     def excluir(id):
-        d = Produto(id, 'None', 'None', 1, 'None')
-        ProdutoDAO.excluir(d)
+        ProdutoDAO.excluir(id)
+
+    @staticmethod
+    def atender_solicitacao(id_solicitacao):
+        sol = ProdutoView.listar_id(id_solicitacao)
+        desc = sol.get_descricao()
+        tipo = sol.get_tipo()
+        quantidade = sol.get_quantidade()
+        id_fav = sol.get_id_favorecido()
+        produtos_estoque = []
+        disp = 0
+        for p in ProdutoView.listar():
+            if (p.get_situacao() == 'Em Estoque'
+                and p.get_descricao() == desc
+                and p.get_tipo() == tipo
+                and p.get_id_favorecido() is None):
+                produtos_estoque.append(p)
+                disp += p.get_quantidade()
+        if disp < quantidade:
+            raise ValueError('Quantidade insuficiente em estoque')
+        usado = 0
+        for p in produtos_estoque:
+            if usado >= quantidade:
+                break
+            disponivel = p.get_quantidade()
+            falta = quantidade - usado
+            if disponivel <= falta:
+                usado += disponivel
+                ProdutoView.atualizar(
+                    p.get_id(),
+                    p.get_descricao(),
+                    p.get_tipo(),
+                    disponivel,
+                    'Em Entrega',
+                    id_fav
+                )
+            else:
+                usado += falta
+                ProdutoView.atualizar(
+                    p.get_id(),
+                    p.get_descricao(),
+                    p.get_tipo(),
+                    disponivel - falta,
+                    'Em Estoque',
+                    None
+                )
+                ProdutoView.inserir(
+                    p.get_descricao(),
+                    p.get_tipo(),
+                    falta,
+                    'Em Entrega',
+                    id_fav
+                )
+        ProdutoView.atualizar(
+            sol.get_id(),
+            desc,
+            tipo,
+            quantidade,
+            'Em Entrega',
+            id_fav
+        )

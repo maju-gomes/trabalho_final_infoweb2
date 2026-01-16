@@ -8,15 +8,17 @@ class Usuario:
     def set_id(self, v):
         self.__id = v
     def set_nome(self, v):
-        if not v:
+        v = v.strip().title() if v else ''
+        if not v or len(v) > 100:
             raise ValueError('Nome Inválido')
-        self.__nome = v
+        self.__nome = v.title()
     def set_email(self, v):
-        if not v or '@' not in v:
+        v = v.strip().lower() if v else ''
+        if not v or '@' not in v or len(v) > 255:
             raise ValueError('E-mail Inválido')
         self.__email = v
     def set_senha(self, v):
-        if not v:
+        if not v or len(v) > 60:
             raise ValueError('Senha Inválida')
         self.__senha = v
 
@@ -40,7 +42,7 @@ class Admin(Usuario):
         self.set_cnpj(cnpj)
 
     def set_cnpj(self, v):
-        v = ''.join(c for c in v if c.isdigit())
+        v = ''.join(c for c in v if c.isdigit()) if v else ''
         if not v or len(v) != 14:
             raise ValueError('CNPJ Inválido')
         self.__cnpj = v
@@ -60,13 +62,13 @@ class Doador(Usuario):
         self.set_telefone(tel)
 
     def set_cpf(self, v):
-        v = ''.join(c for c in v if c.isdigit())
+        v = ''.join(c for c in v if c.isdigit()) if v else ''
         if not v or len(v) != 11:
             raise ValueError('CPF Inválido')
         self.__cpf = v
     def set_telefone(self, v):
-        v = ''.join(c for c in v if c.isdigit())
-        if len(v) != 11:
+        v = ''.join(c for c in v if c.isdigit()) if v else ''
+        if not v or len(v) != 11:
             raise ValueError("Telefone inválido")
         self.__telefone = v
 
@@ -87,15 +89,14 @@ class Favorecido(Usuario):
         self.set_id_endereco(i_e)
 
     def set_cpf(self, v):
-        v = ''.join(c for c in v if c.isdigit())
+        v = ''.join(c for c in v if c.isdigit()) if v else ''
         if not v or len(v) != 11:
             raise ValueError('CPF Inválido')
         self.__cpf = v
     def set_telefone(self, v):
-        if v:
-            v = ''.join(c for c in v if c.isdigit())
-            if len(v) != 11:
-                raise ValueError("Telefone inválido")
+        v = ''.join(c for c in v if c.isdigit()) if v else ''
+        if v and len(v) != 11:
+            raise ValueError("Telefone inválido")
         self.__telefone = v
     def set_id_endereco(self, v):
         self.__id_endereco = v

@@ -12,23 +12,27 @@ class Endereco:
     def set_id(self, v):
         self.__id = v
     def set_cep(self, v):
-        v = ''.join(c for c in v if c.isdigit())
+        v = ''.join(c for c in v if c.isdigit()) if v else ''
         if not v or len(v) != 8:
             raise ValueError('CEP Inválido')
         self.__cep = v
     def set_uf(self, v):
+        v = v.strip().upper() if v else ''
         if not v or len(v) != 2:
             raise ValueError('UF Inválido')
         self.__uf = v
     def set_cidade(self, v):
+        v = v.strip().title() if v else ''
         if not v or len(v) > 100:
             raise ValueError('Cidade Inválida')
         self.__cidade = v
     def set_bairro(self, v):
+        v = v.strip().title() if v else ''
         if not v or len(v) > 100:
             raise ValueError('Bairro Inválido')
         self.__bairro = v
     def set_rua(self, v):
+        v = v.strip().title() if v else ''
         if not v or len(v) > 150:
             raise ValueError('Rua Inválida')
         self.__rua = v

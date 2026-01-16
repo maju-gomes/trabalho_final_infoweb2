@@ -45,10 +45,10 @@ class DoacaoDAO(Database):
         cls.fechar()
 
     @classmethod
-    def excluir(cls, obj:Produto):
+    def excluir(cls, id):
         cls.abrir()
         comando = "DELETE FROM doacao WHERE id = ?"
-        cls.execute(comando, (obj.get_id(),))
+        cls.execute(comando, (id,))
         cls.fechar()
 
 # -----------------
@@ -58,9 +58,9 @@ class ProdutoDAO(Database):
     def inserir(cls, obj:Produto):
         cls.abrir()
         comando = """
-            INSERT INTO produto (descricao, tipo, quantidade, id_favorecido) VALUES (?, ?, ?, ?)
+            INSERT INTO produto (descricao, tipo, quantidade, situacao, id_favorecido) VALUES (?, ?, ?, ?, ?)
         """
-        parametros = (obj.get_descricao(), obj.get_tipo(), obj.get_quantidade(), obj.get_id_favorecido())
+        parametros = (obj.get_descricao(), obj.get_tipo(), obj.get_quantidade(), obj.get_situacao(), obj.get_id_favorecido())
         cursor = cls.execute(comando, parametros)
         id = cursor.lastrowid
         obj.set_id(id)
@@ -72,7 +72,7 @@ class ProdutoDAO(Database):
         comando = " SELECT * FROM produto "
         cursor = cls.execute(comando)
         linhas = cursor.fetchall()
-        objs = [Produto(id, descricao, tipo, quantidade, id_favorecido) for (id, descricao, tipo, quantidade, id_favorecido) in linhas]
+        objs = [Produto(id, descricao, tipo, quantidade, situacao, id_favorecido) for (id, descricao, tipo, quantidade, situacao, id_favorecido) in linhas]
         cls.fechar()
         return objs
 
@@ -90,15 +90,15 @@ class ProdutoDAO(Database):
     def atualizar(cls, obj:Produto):
         cls.abrir()
         comando = """
-            UPDATE produto SET descricao = ?, tipo = ?, quantidade = ?, id_favorecido = ? WHERE id = ?
+            UPDATE produto SET descricao = ?, tipo = ?, quantidade = ?, situacao = ?, id_favorecido = ? WHERE id = ?
         """
-        parametros = (obj.get_descricao(), obj.get_tipo(), obj.get_quantidade(), obj.get_id_favorecido(), obj.get_id())
+        parametros = (obj.get_descricao(), obj.get_tipo(), obj.get_quantidade(), obj.get_situacao(), obj.get_id_favorecido(), obj.get_id())
         cls.execute(comando, parametros)
         cls.fechar()
 
     @classmethod
-    def excluir(cls, obj:Produto):
+    def excluir(cls, id):
         cls.abrir()
         comando = "DELETE FROM produto WHERE id = ?"
-        cls.execute(comando, (obj.get_id(),))
+        cls.execute(comando, (id,))
         cls.fechar()

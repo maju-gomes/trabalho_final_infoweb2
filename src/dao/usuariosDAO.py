@@ -45,10 +45,10 @@ class UsuarioDAO(Database):
         cls.fechar()
 
     @classmethod
-    def excluir(cls, obj):
+    def excluir(cls, id):
         cls.abrir()
         comando = "DELETE FROM usuario WHERE id = ?"
-        cls.execute(comando, (obj.get_id(),))
+        cls.execute(comando, (id,))
         cls.fechar()
 
 class AdminDAO(Database):
@@ -104,8 +104,8 @@ class AdminDAO(Database):
         cls.fechar()
 
     @classmethod
-    def excluir(cls, obj):
-        UsuarioDAO.excluir(obj)
+    def excluir(cls, id):
+        UsuarioDAO.excluir(id)
 
 
 class DoadorDAO(Database):
@@ -161,8 +161,8 @@ class DoadorDAO(Database):
         cls.fechar()
 
     @classmethod
-    def excluir(cls, obj):
-        UsuarioDAO.excluir(obj)
+    def excluir(cls, id):
+        UsuarioDAO.excluir(id)
 
 
 class FavorecidoDAO(Database):
@@ -218,5 +218,5 @@ class FavorecidoDAO(Database):
         cls.fechar()
 
     @classmethod
-    def excluir(cls, obj):
-        UsuarioDAO.excluir(obj)
+    def excluir(cls, id):
+        UsuarioDAO.excluir(id)

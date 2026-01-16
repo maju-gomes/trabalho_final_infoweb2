@@ -64,7 +64,7 @@ class Database:
                 telefone CHAR(11) NULL,
                 id_endereco INTEGER NOT NULL,
                 FOREIGN KEY (id_usuario) REFERENCES usuario (id) ON DELETE CASCADE,
-                FOREIGN KEY (id_endereco) REFERENCES endereco (id) ON DELETE CASCADE
+                FOREIGN KEY (id_endereco) REFERENCES endereco (id)
             );  
         """)
         cls.execute("""
@@ -74,9 +74,9 @@ class Database:
                 tipo VARCHAR(50) NOT NULL,
                 quantidade_doada INTEGER NOT NULL,
                 quantidade_disponivel INTEGER NOT NULL,
-                situacao BOOLEAN NULL,
-                id_doador INTEGER NOT NULL,
-                FOREIGN KEY (id_doador) REFERENCES doador (id_usuario) ON DELETE CASCADE
+                situacao VARCHAR(15) NULL,
+                id_doador INTEGER NULL,
+                FOREIGN KEY (id_doador) REFERENCES doador (id_usuario)
             );
         """)
         cls.execute("""
@@ -85,8 +85,9 @@ class Database:
                 descricao VARCHAR(50) NOT NULL,
                 tipo VARCHAR(50) NOT NULL,
                 quantidade INTEGER NOT NULL,
+                situacao VARCHAR(15) NOT NULL,
                 id_favorecido INTEGER NULL,
-                FOREIGN KEY (id_favorecido) REFERENCES favorecido (id_usuario) ON DELETE CASCADE
+                FOREIGN KEY (id_favorecido) REFERENCES favorecido (id_usuario)
             );
         """)
 
