@@ -17,7 +17,7 @@ class VUUI:
             list_dic = []
             for obj in fav:
                 e = EnderecoView.listar_id(obj.get_id_endereco())
-                cpf = f"{obj.get_cpf()[:3]}.{obj.get_cpf()[3:6]}.{obj.get_cpf()[6:9]}-{obj.get_cpf()[9:11]}"
+                cpf = f"{obj.get_cpf()[:3]}.{obj.get_cpf()[3:6]}.{obj.get_cpf()[6:9]}-{obj.get_cpf()[9:]}"
                 end = f"{e.get_rua()}, {e.get_numero()} - {e.get_bairro()}, {e.get_cidade()}/{e.get_uf()}"
                 list_dic.append({
                     'Titular':f"{obj.get_nome()} ({cpf})",
@@ -37,7 +37,7 @@ class VUUI:
         else:
             list_dic = []
             for obj in do:
-                cpf = f"{obj.get_cpf()[:3]}.{obj.get_cpf()[3:6]}.{obj.get_cpf()[6:9]}-{obj.get_cpf()[9:11]}"
+                cpf = f"{obj.get_cpf()[:3]}.{obj.get_cpf()[3:6]}.{obj.get_cpf()[6:9]}-{obj.get_cpf()[9:]}"
                 doacoes = sum(1 for d in DoacaoView.listar() if d.get_id_doador() == obj.get_id())
                 list_dic.append({
                     'Titular':f"{obj.get_nome()} ({cpf})",
@@ -46,4 +46,4 @@ class VUUI:
                     'Doações':doacoes
                 })
             df = pd.DataFrame(list_dic)
-            st.dataframde(df)
+            st.dataframe(df)

@@ -16,7 +16,7 @@ class MPUI:
         i_f = st.session_state['id_usuario']
         produtos = [p for p in ProdutoView.listar() if p.get_id_favorecido() == i_f]
         if not produtos:
-            st.write('Não há produtos vinculados')
+            st.write('Nenhum produto vinculado')
         else:
             list_dic = []
             for obj in produtos:
@@ -35,15 +35,15 @@ class MPUI:
             tipo = st.text_input('Informe o tipo', key='sol_produto_tipo')
             qntd = st.text_input('Informe a quantidade', key='sol_produto_qntd')
             submit = st.form_submit_button('Solicitar')
-        if submit:
-            try:
-                id = st.session_state['id_usuario']
-                ProdutoView.inserir(desc, tipo, qntd, 'Solicitado', id)
-                st.success('Produto solicitado com sucesso')
-            except ValueError as erro:
-                st.error(erro)
-            time.sleep(2)
-            st.rerun()
+            if submit:
+                try:
+                    id = st.session_state['id_usuario']
+                    ProdutoView.inserir(desc, tipo, qntd, 'Solicitado', id)
+                    st.success('Produto solicitado com sucesso')
+                except ValueError as erro:
+                    st.error(erro)
+                time.sleep(2)
+                st.rerun()
     
     def atualizar():
         i_f = st.session_state['id_usuario']
@@ -62,15 +62,15 @@ class MPUI:
                 tipo = st.text_input('Informe o tipo', op.get_tipo(), key='upd_sol_produto_tipo')
                 qntd = st.text_input('Informe a quantidade', str(op.get_quantidade()), key='upd_sol_produto_qntd')
                 submit = st.form_submit_button('Atualizar')
-            if submit:
-                try:
-                    id = op.get_id()
-                    ProdutoView.atualizar_solicitacao(id, desc, tipo, op.get_quantidade(), qntd, op.get_situacao(), i_f)
-                    st.success('Solicitação atualizada com sucesso')
-                except ValueError as erro:
-                    st.error(erro)
-                time.sleep(2)
-                st.rerun()
+                if submit:
+                    try:
+                        id = op.get_id()
+                        ProdutoView.atualizar_solicitacao(id, desc, tipo, op.get_quantidade(), qntd, op.get_situacao(), i_f)
+                        st.success('Solicitação atualizada com sucesso')
+                    except ValueError as erro:
+                        st.error(erro)
+                    time.sleep(2)
+                    st.rerun()
     
     def cancelar():
         i_f = st.session_state['id_usuario']
@@ -86,11 +86,11 @@ class MPUI:
                     key='del_sol_produto_op'
                 )
                 submit = st.form_submit_button('Cancelar')
-            if submit:
-                try:
-                    ProdutoView.excluir(op.get_id(), op.get_situacao())
-                    st.success('Solicitação cancelada com sucesso')
-                except ValueError as erro:
-                    st.error(erro)
-                time.sleep(2)
-                st.rerun()
+                if submit:
+                    try:
+                        ProdutoView.excluir(op.get_id(), op.get_situacao())
+                        st.success('Solicitação cancelada com sucesso')
+                    except ValueError as erro:
+                        st.error(erro)
+                    time.sleep(2)
+                    st.rerun()

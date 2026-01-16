@@ -28,15 +28,15 @@ class MFUI:
                 num = st.text_input('Informe o número', key='ins_fav_num')
                 com = st.text_input('Informe o complemento', key='ins_fav_com')
             submit = st.form_submit_button('Cadastrar')
-        if submit:
-            try:
-                i_e = EnderecoView.inserir(cep, uf, ci, ba, rua, num, com)
-                FavorecidoView.inserir(nome, email, senha, cpf, fone, i_e)
-                st.success('Favorecido cadastrado com sucesso')
-            except ValueError as erro:
-                st.error(erro)
-            time.sleep(2)
-            st.rerun()
+            if submit:
+                try:
+                    i_e = EnderecoView.inserir(cep, uf, ci, ba, rua, num, com)
+                    FavorecidoView.inserir(nome, email, senha, cpf, fone, i_e)
+                    st.success('Favorecido cadastrado com sucesso')
+                except ValueError as erro:
+                    st.error(erro)
+                time.sleep(2)
+                st.rerun()
 
     def atualizar():
         if not st.session_state.liberar_fav:
@@ -44,13 +44,13 @@ class MFUI:
                 email_cpf = st.text_input('Informe o e-mail ou CPF')
                 senha_aut = st.text_input('Informe a senha', key='senha_aut')
                 submit = st.form_submit_button('Entrar')
-            if submit:
-                op = FavorecidoView.autenticar(email_cpf, senha_aut)
-                if not op:
-                    st.write('Dados Inválidos')
-                else:
-                    st.session_state.liberar_fav = True
-                    st.rerun()
+                if submit:
+                    op = FavorecidoView.autenticar(email_cpf, senha_aut)
+                    if not op:
+                        st.write('Dados Inválidos')
+                    else:
+                        st.session_state.liberar_fav = True
+                        st.rerun()
         else:
             with st.form('ins_fav'):
                 end = EnderecoView.listar_id(op.get_id_endereco())
@@ -58,7 +58,8 @@ class MFUI:
                     nome = st.text_input('Informe o nome', op.get_nome(), key='upd_fav_nome')
                     email = st.text_input('Informe o e-mail', op.get_email(), key='upd_fav_email')
                     senha = st.text_input('Informe a senha', op.get_senha(), key='upd_fav_senha', type='password')
-                    cpf = st.text_input('Informe o CPF', op.get_cpf(), key='upd_fav_cpf')
+                    cpf_old = f"{op.get_cpf()[:3]}.{op.get_cpf()[3:6]}.{op.get_cpf()[6:9]}-{op.get_cpf()[9:]}"
+                    cpf = st.text_input('Informe o CPF', cpf_old, key='upd_fav_cpf')
                     fone = st.text_input('Informe o telefone', op.get_telefone(), key='upd_fav_fone')
                 with st.expander('Dados de Endereço'):
                     cep = st.text_input('Informe o CEP', end.get_cep(), key='upd_fav_cep')
@@ -69,31 +70,31 @@ class MFUI:
                     num = st.text_input('Informe o número', end.get_numero(), key='upd_fav_num')
                     com = st.text_input('Informe o complemento', end.get_complemento(), key='upd_fav_com')
                 submit = st.form_submit_button('Atualizar')
-            if submit:
-                try:
-                    i_e = EnderecoView.atualizar(cep, uf, ci, ba, rua, num, com)
-                    FavorecidoView.atualizar(op.get_id(), nome, email, senha, cpf, fone, i_e)
-                    st.session_state.liberar_fav = False
-                    st.success('Dados atualizados com sucesso')
-                except ValueError as erro:
-                    st.error(erro)
-                time.sleep(2)
-                st.rerun()
+                if submit:
+                    try:
+                        i_e = EnderecoView.atualizar(cep, uf, ci, ba, rua, num, com)
+                        FavorecidoView.atualizar(op.get_id(), nome, email, senha, cpf, fone, i_e)
+                        st.session_state.liberar_fav = False
+                        st.success('Dados atualizados com sucesso')
+                    except ValueError as erro:
+                        st.error(erro)
+                    time.sleep(2)
+                    st.rerun()
 
     def excluir():
         with st.form('autorizar_del'):
             email_cpf = st.text_input('Informe o e-mail ou CPF')
-            senha_aut = st.text_input('Informe a senha', key='senha_aut')
+            senha = st.text_input('Informe a senha')
             submit = st.form_submit_button('Deletar')
-        if submit:
-            op = FavorecidoView.autenticar(email_cpf, senha_aut)
-            if not op:
-                st.write('Dados Inválidos')
-            else:
-                try:
-                    FavorecidoView.excluir(op.get_id())
-                    st.success('Favorecido excluído com sucesso')
-                except ValueError as erro:
-                    st.error(erro)
-                time.sleep(2)
-                st.rerun()
+            if submit:
+                op = FavorecidoView.autenticar(email_cpf, senha)
+                if not op:
+                    st.write('Dados Inválidos')
+                else:
+                    try:
+                        FavorecidoView.excluir(op.get_id())
+                        st.success('Favorecido excluído com sucesso')
+                    except ValueError as erro:
+                        st.error(erro)
+                    time.sleep(2)
+                    st.rerun()

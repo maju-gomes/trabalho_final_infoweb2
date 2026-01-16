@@ -39,15 +39,15 @@ class MDUI:
             tipo = st.text_input('Informe o tipo', key='ins_doacao_tipo')
             qntd = st.text_input('Informe a quantidade', key='ins_doacao_qntd')
             submit = st.form_submit_button('Doar')
-        if submit:
-            try:
-                id = st.session_state['id_usuario']
-                DoacaoView.inserir(desc, tipo, qntd, 'Pendente', id)
-                st.success('Doação registrada com sucesso')
-            except ValueError as erro:
-                st.error(erro)
-            time.sleep(2)
-            st.rerun()
+            if submit:
+                try:
+                    id = st.session_state['id_usuario']
+                    DoacaoView.inserir(desc, tipo, qntd, 'Pendente', id)
+                    st.success('Doação registrada com sucesso')
+                except ValueError as erro:
+                    st.error(erro)
+                time.sleep(2)
+                st.rerun()
     
     def atualizar():
         i_d = st.session_state['id_usuario']
@@ -66,21 +66,21 @@ class MDUI:
                 tipo = st.text_input('Informe o tipo', op.get_tipo(), key='upd_doacao_tipo')
                 qntd = st.text_input('Informe a quantidade', str(op.get_quantidade_doada()), key='upd_doacao_qntd')
                 submit = st.form_submit_button('Atualizar')
-            if submit:
-                try:
-                    id = op.get_id()
-                    DoacaoView.atualizar(id, desc, tipo, qntd, qntd, 'Pendente', i_d)
-                    st.success('Doação atualizada com sucesso')
-                except ValueError as erro:
-                    st.error(erro)
-                time.sleep(2)
-                st.rerun()
+                if submit:
+                    try:
+                        id = op.get_id()
+                        DoacaoView.atualizar(id, desc, tipo, qntd, qntd, 'Pendente', i_d)
+                        st.success('Doação atualizada com sucesso')
+                    except ValueError as erro:
+                        st.error(erro)
+                    time.sleep(2)
+                    st.rerun()
     
     def cancelar():
         i_d = st.session_state['id_usuario']
         doacoes = [d for d in DoacaoView.listar() if d.get_id_doador() == i_d and d.get_situacao() == 'Pendente']
         if not doacoes:
-            st.write('Não há doações pendentes')
+            st.write('Nenhuma doação pendente')
         else:
             with st.form('del_doacao'):
                 op = st.selectbox(
@@ -90,11 +90,11 @@ class MDUI:
                     key='del_doacao_op'
                 )
                 submit = st.form_submit_button('Cancelar')
-            if submit:
-                try:
-                    DoacaoView.excluir(op.get_id())
-                    st.success('Doação cancelada com sucesso')
-                except ValueError as erro:
-                    st.error(erro)
-                time.sleep(2)
-                st.rerun()
+                if submit:
+                    try:
+                        DoacaoView.excluir(op.get_id())
+                        st.success('Doação cancelada com sucesso')
+                    except ValueError as erro:
+                        st.error(erro)
+                    time.sleep(2)
+                    st.rerun()

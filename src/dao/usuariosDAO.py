@@ -124,7 +124,7 @@ class DoadorDAO(Database):
     def listar(cls):
         cls.abrir()
         comando = """
-            SELECT usuario.id, usuario.nome, usuario.email, usuario.senha, doador.cpd, doador.telefone
+            SELECT usuario.id, usuario.nome, usuario.email, usuario.senha, doador.cpf, doador.telefone
             FROM usuario
             JOIN doador ON usuario.id = doador.id_usuario
         """

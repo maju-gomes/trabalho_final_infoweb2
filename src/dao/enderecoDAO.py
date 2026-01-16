@@ -10,7 +10,8 @@ class EnderecoDAO(Database):
         """
         parametros = (obj.get_cep(), obj.get_uf(), obj.get_cidade(), obj.get_bairro(), obj.get_rua(), obj.get_numero(), obj.get_complemento())
         cursor = cls.execute(comando, parametros)
-        id = cursor.lastrowid 
+        id = cursor.lastrowid
+        obj.set_id(id)
         cls.fechar()
         return id
 

@@ -223,8 +223,7 @@ class EnderecoView:
                 break
         if id == None:
             e = Endereco(None, cep, uf, ci, b, r, num, com)
-            EnderecoDAO.inserir(e)
-            id = e.get_id()
+            id = EnderecoDAO.inserir(e)
         return id
     
     @staticmethod
