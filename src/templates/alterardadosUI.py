@@ -55,10 +55,11 @@ class PFUI:
             st.text_input('Nome', op.get_nome(), disabled=True)
             st.text_input('E-mail', op.get_email(), disabled=True)
             st.text_input('Senha', op.get_senha(), type='password', disabled=True)
-            cpf_old = f"{op.get_cpf()[:3]}.{op.get_cpf()[3:6]}.{op.get_cpf()[6:9]}-{op.get_cpf()[9:]}"
-            st.text_input('CPF', cpf_old, disabled=True)
+            cpf = f"{op.get_cpf()[:3]}.{op.get_cpf()[3:6]}.{op.get_cpf()[6:9]}-{op.get_cpf()[9:]}"
+            st.text_input('CPF', cpf, disabled=True)
             st.text_input('Telefone', op.get_telefone(), disabled=True)
         with st.expander('Dados de Endereço'):
+            cep = f"{end.get_cep()[:5]}-{end.get_cep()[5:]}"
             st.text_input('CEP', end.get_cep(), disabled=True)
             st.text_input('Unidade Federativa (UF)', end.get_uf(), disabled=True)
             st.text_input('Cidade', end.get_cidade(), disabled=True)

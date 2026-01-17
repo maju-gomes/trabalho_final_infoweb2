@@ -33,7 +33,7 @@ class MPUI:
         with st.form('sol_produto'):
             desc = st.text_input('Informe a descrição', key='sol_produto_desc')
             tipo = st.text_input('Informe o tipo', key='sol_produto_tipo')
-            qntd = st.text_input('Informe a quantidade', key='sol_produto_qntd')
+            qntd = st.number_input('Informe a quantidade', key='sol_produto_qntd', min_value=0, step=1)
             submit = st.form_submit_button('Solicitar')
             if submit:
                 try:
@@ -60,7 +60,7 @@ class MPUI:
                 )
                 desc = st.text_input('Informe a descrição', op.get_descricao(), key='upd_sol_produto_desc')
                 tipo = st.text_input('Informe o tipo', op.get_tipo(), key='upd_sol_produto_tipo')
-                qntd = st.text_input('Informe a quantidade', str(op.get_quantidade()), key='upd_sol_produto_qntd')
+                qntd = st.number_input('Informe a quantidade', value=op.get_quantidade(), key='upd_sol_produto_qntd', min_value=0, step=1)
                 submit = st.form_submit_button('Atualizar')
                 if submit:
                     try:

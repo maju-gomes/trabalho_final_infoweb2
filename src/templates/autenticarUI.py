@@ -24,7 +24,7 @@ class CCUI:
         with st.form('criar_conta'):
             nome = st.text_input('Informe o nome', key='doador_nome')
             email = st.text_input('Informe o e-mail', key='doador_email')
-            senha = st.text_input('Informe a senha', key='doador_senha')
+            senha = st.text_input('Informe a senha', key='doador_senha', type='password')
             cpf = st.text_input('Informe o CPF')
             fone = st.text_input('Informe o telefone')
             submit = st.form_submit_button('Registar-se')

@@ -20,9 +20,8 @@ class RUI:
         else:
             for obj in produtos:
                 fav = FavorecidoView.listar_id(obj.get_id_favorecido())
-                cpf = f"{obj.get_cpf()[:3]}.{obj.get_cpf()[3:6]}.{obj.get_cpf()[6:9]}-{obj.get_cpf()[9:]}"
+                cpf = f"{fav.get_cpf()[:3]}.{fav.get_cpf()[3:6]}.{fav.get_cpf()[6:9]}-{fav.get_cpf()[9:]}"
                 list_dic.append({
-                    'ID': obj.get_id(),
                     'Solicitante': f'{fav.get_nome()} ({cpf})',
                     'Descrição': obj.get_descricao(),
                     'Tipo': obj.get_tipo(),
@@ -131,9 +130,11 @@ class RUI:
             index = opcoes.index(op)
             pro = sols[index]
             end = ends[index]
+            qntd = 0 if pro.get_situacao() == 'Solicitado' else pro.get_quantidade()
             st.text_input('Produto', f'{pro.get_descricao()} - {pro.get_tipo()}', disabled=True)
-            st.text_input('Quantidade', str(pro.get_quantidade()), disabled=True)
-            e = f"{end.get_rua()}, {end.get_numero()} - {end.get_bairro()}, {end.get_cidade()}/{end.get_uf()} | CEP: {end.get_cep()}"
+            st.number_input('Quantidade', qntd, disabled=True)
+            cep = f"{end.get_cep()[:5]}-{end.get_cep()[5:]}"
+            e = f"{end.get_rua()}, {end.get_numero()} - {end.get_bairro()}, {end.get_cidade()}/{end.get_uf()} | CEP: {cep}"
             if end.get_complemento():
                 e += f" | {end.get_complemento()}"
             st.text_input('Endereço', e, disabled=True)

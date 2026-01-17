@@ -90,8 +90,3 @@ class Database:
                 FOREIGN KEY (id_favorecido) REFERENCES favorecido (id_usuario)
             );
         """)
-
-if __name__ == "__main__":
-    Database.abrir()
-    Database.criar_tabelas()
-    Database.fechar()

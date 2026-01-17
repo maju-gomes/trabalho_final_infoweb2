@@ -1,9 +1,13 @@
 import streamlit as st
-from view import DoadorView, FavorecidoView
+from dao.database import Database
+from view import DoadorView, FavorecidoView, AdminView
 from templates import autenticarUI, manterfavorecidoUI, visualizarusuariosUI, reciclagemUI, confirmarUI, alterardadosUI, manterdoacaoUI, manterprodutoUI
 
 class IndexUI:
     def main():
+        Database.abrir()
+        Database.criar_tabelas()
+        Database.fechar()        
         IndexUI.sidebar()
         
     def menu_visitante():
@@ -23,17 +27,18 @@ class IndexUI:
         if 'liberar_fav' not in st.session_state:
             st.session_state.liberar_fav = False
 
-        op = st.sidebar.selectbox('Menu', ['Cadastro de Favorecidos', 'Visualizar Usuários', 'Registrar Reciclagem', 'Confirmar Doação', 'Atualizar Dados'])
-        if op == 'Cadastro de Favorecidos': manterfavorecidoUI.MFUI.main()
-        if op == 'Visualizar Usuários':
-            st.session_state.liberar_fav = False
-            visualizarusuariosUI.VUUI.main()
+        op = st.sidebar.selectbox('Menu', ['Registrar Reciclagem', 'Visualizar Usuários', 'Confirmar Doação', 'Cadastro de Favorecidos', 'Atualizar Dados'])
         if op == 'Registrar Reciclagem':
             st.session_state.liberar_fav = False
             reciclagemUI.RUI.main()
+        if op == 'Visualizar Usuários':
+            st.session_state.liberar_fav = False
+            visualizarusuariosUI.VUUI.main()
         if op == 'Confirmar Doação':
             st.session_state.liberar_fav = False
             confirmarUI.CDUI.main()
+        if op == 'Cadastro de Favorecidos':
+            manterfavorecidoUI.MFUI.main()
         if op == 'Atualizar Dados':
             st.session_state.liberar_fav = False
             alterardadosUI.PAUI.main()
@@ -44,16 +49,42 @@ class IndexUI:
         if op == 'Atualizar Dados': alterardadosUI.PDUI.main()
 
     def menu_favorecido():
-        op = st.sidebar.selectbox('Menu', ['Meus Produtos', 'Confirmar Recebimento' 'Visualizar Dados'])
+        op = st.sidebar.selectbox('Menu', ['Meus Produtos', 'Confirmar Recebimento' ,'Visualizar Dados'])
         if op == 'Meus Produtos': manterprodutoUI.MPUI.main()
         if op == 'Confirmar Recebimento': confirmarUI.CPUI.main()
         if op == 'Visualizar Dados': alterardadosUI.PFUI.main()
 
+    def deletar_conta():
+        if 'confirmar' not in st.session_state:
+            st.session_state.confirmar = False
+        if not st.session_state.confirmar:
+            if st.sidebar.button('Deletar Conta'):
+                st.session_state.confirmar = True
+                st.rerun()
+        else:
+            with st.sidebar.container(border=True):
+                st.warning('Tem certeza que deseja deletar sua conta?')
+                st.caption('Essa ação não pode ser desfeita.')
+                col1, col2 = st.columns(2)
+                if col1.button('Deletar'):
+                    try:
+                        id_user = st.session_state['id_usuario']
+                        if DoadorView.listar_id(id_user):
+                            DoadorView.excluir(id_user)
+                        elif AdminView.listar_id(id_user):
+                            AdminView.excluir(id_user)
+                        st.success('Conta deletada com sucesso')
+                        IndexUI.sair_sistema()
+                    except ValueError as erro:
+                        st.error(erro)
+                if col2.button('Cancelar'):
+                    st.session_state.confirmar = False
+                    st.rerun()
+        
     def sair_sistema():
-        if st.sidebar.button('Sair'):
-            del st.session_state['id_usuario']
-            del st.session_state['nome_usuario']
-            st.rerun()
+        del st.session_state['id_usuario']
+        del st.session_state['nome_usuario']
+        st.rerun()
     
     def sidebar():
         if 'id_usuario' not in st.session_state:
@@ -62,12 +93,15 @@ class IndexUI:
             nome_user = st.session_state['nome_usuario']
             id_user = st.session_state['id_usuario']
             st.sidebar.write('Bem-vindo(a), ' + nome_user)
-            if id_user in [obj.get_id() for obj in DoadorView.listar()]:
-                IndexUI.menu_doador()
-            elif id_user in [obj.get_id() for obj in FavorecidoView.listar()]:
-                IndexUI.menu_favorecido()
-            else:
+            if AdminView.listar_id(id_user):
                 IndexUI.menu_admin()
-            IndexUI.sair_sistema()
+                IndexUI.deletar_conta()
+            elif DoadorView.listar_id(id_user):
+                IndexUI.menu_doador()
+                IndexUI.deletar_conta()
+            else:
+                IndexUI.menu_favorecido()
+            if st.sidebar.button('Sair'):
+                IndexUI.sair_sistema()
 
 IndexUI.main()

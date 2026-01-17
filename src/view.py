@@ -116,6 +116,23 @@ class DoadorView:
 
     @staticmethod
     def excluir(id):
+        do = [d for d in DoacaoView.listar() if d.get_id_doador() == id]
+        if do:
+            for obj in do:
+                if obj.get_situacao() == 'Usada':
+                    DoacaoView.excluir(obj.get_id())
+                elif obj.get_situacao() == 'Em Estoque':
+                    DoacaoView.atualizar(
+                        obj.get_id(),
+                        obj.get_descricao(),
+                        obj.get_tipo(),
+                        obj.get_quantidade_doada(),
+                        obj.get_quantidade_disponivel(),
+                        obj.get_situacao(),
+                        None
+                        )
+                else:
+                    raise ValueError('Há doações em aberto')
         UsuarioView.excluir(id)
 
     @staticmethod
@@ -186,9 +203,8 @@ class FavorecidoView:
                 elif obj.get_situacao() == 'Em Estoque':
                     ProdutoView.atualizar(obj.get_id(), obj.get_descricao(), obj.get_tipo(), obj.get_quantidade(), None)
                 else:
-                    raise ValueError('Há produtos em rota de entrega a este favorecido')
-        UsuarioView.excluit(id)
-                
+                    raise ValueError('Há produtos em rota de entrega pra este usuário')
+        UsuarioView.excluir(id)
 
     @staticmethod
     def autenticar(email_cpf, senha):
@@ -274,7 +290,9 @@ class DoacaoView:
         DoacaoView.atualizar(id, d.get_descricao(), d.get_tipo(), d.get_quantidade_doada(), d.get_quantidade_disponivel(), 'Em Estoque', d.get_id_doador())
 
     @staticmethod
-    def excluir(id):
+    def excluir(id, situacao=None):
+        if situacao != 'Pendente':
+            raise ValueError('Doação já entregue')
         DoacaoDAO.excluir(id)
 
 class ProdutoView:
@@ -312,7 +330,7 @@ class ProdutoView:
                     situacao_doacao,
                     d.get_id_doador()
                 )
-        p = Produto(descricao, tipo, qntd_produto, situacao, id_favorecido)
+        p = Produto(None, descricao, tipo, qntd_produto, situacao, id_favorecido)
         ProdutoDAO.inserir(p)
 
     @staticmethod

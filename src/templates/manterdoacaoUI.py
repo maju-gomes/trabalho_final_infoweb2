@@ -37,7 +37,7 @@ class MDUI:
         with st.form('ins_doacao'):
             desc = st.text_input('Informe a descrição', key='ins_doacao_desc')
             tipo = st.text_input('Informe o tipo', key='ins_doacao_tipo')
-            qntd = st.text_input('Informe a quantidade', key='ins_doacao_qntd')
+            qntd = st.number_input('Informe a quantidade', key='ins_doacao_qntd', min_value=0, step=1)
             submit = st.form_submit_button('Doar')
             if submit:
                 try:
@@ -64,7 +64,7 @@ class MDUI:
                 )
                 desc = st.text_input('Informe a descrição', op.get_descricao(), key='upd_doacao_desc')
                 tipo = st.text_input('Informe o tipo', op.get_tipo(), key='upd_doacao_tipo')
-                qntd = st.text_input('Informe a quantidade', str(op.get_quantidade_doada()), key='upd_doacao_qntd')
+                qntd = st.number_input('Informe a quantidade', value=op.get_quantidade_doada(), key='upd_doacao_qntd', min_value=0, step=1)
                 submit = st.form_submit_button('Atualizar')
                 if submit:
                     try:
@@ -92,7 +92,7 @@ class MDUI:
                 submit = st.form_submit_button('Cancelar')
                 if submit:
                     try:
-                        DoacaoView.excluir(op.get_id())
+                        DoacaoView.excluir(op.get_id(), op.get_situacao())
                         st.success('Doação cancelada com sucesso')
                     except ValueError as erro:
                         st.error(erro)

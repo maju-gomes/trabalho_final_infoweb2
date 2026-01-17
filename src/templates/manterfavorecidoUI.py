@@ -6,12 +6,16 @@ class MFUI:
     def main():
         st.header('Cadastro de Favorecidos')
         tab1, tab2, tab3 = st.tabs(['Inserir', 'Atualizar', 'Excluir'])
-        with tab1: MFUI.inserir()
-        with tab2: MFUI.atualizar()
-        with tab3: MFUI.excluir()
-
+        with tab1:
+            st.session_state.liberar_fav = False
+            MFUI.inserir()
+        with tab2:
+            MFUI.atualizar()
+        with tab3:
+            st.session_state.liberar_fav = False
+            MFUI.excluir()
+            
     def inserir():
-        st.session_state.liberar_fav = False
         with st.form('ins_fav'):
             with st.expander('Dados Pessoais', expanded=True):
                 nome = st.text_input('Informe o nome', key='ins_fav_nome')
@@ -39,10 +43,12 @@ class MFUI:
                 st.rerun()
 
     def atualizar():
+        if 'liberar_fav' not in st.session_state:
+            st.session_state.liberar_fav = False
         if not st.session_state.liberar_fav:
             with st.form('autorizar_upd'):
                 email_cpf = st.text_input('Informe o e-mail ou CPF')
-                senha_aut = st.text_input('Informe a senha', key='senha_aut')
+                senha_aut = st.text_input('Informe a senha', key='senha_aut', type='password')
                 submit = st.form_submit_button('Entrar')
                 if submit:
                     op = FavorecidoView.autenticar(email_cpf, senha_aut)
@@ -50,9 +56,10 @@ class MFUI:
                         st.write('Dados Inválidos')
                     else:
                         st.session_state.liberar_fav = True
-                        st.rerun()
+                        st.session_state.fav = op
         else:
-            with st.form('ins_fav'):
+            with st.form('upd_fav'):
+                op = st.session_state.fav
                 end = EnderecoView.listar_id(op.get_id_endereco())
                 with st.expander('Dados Pessoais', expanded=True):
                     nome = st.text_input('Informe o nome', op.get_nome(), key='upd_fav_nome')
