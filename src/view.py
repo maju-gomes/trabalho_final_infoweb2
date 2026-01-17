@@ -269,6 +269,11 @@ class DoacaoView:
         DoacaoDAO.atualizar(d)
 
     @staticmethod
+    def confirmar(id):
+        d = DoacaoView.listar_id(id)
+        DoacaoView.atualizar(id, d.get_descricao(), d.get_tipo(), d.get_quantidade_doada(), d.get_quantidade_disponivel(), 'Em Estoque', d.get_id_doador())
+
+    @staticmethod
     def excluir(id):
         DoacaoDAO.excluir(id)
 
@@ -424,6 +429,12 @@ class ProdutoView:
             'Em Entrega',
             id_fav
         )
+
+    @staticmethod
+    def confirmar(id):
+        p = ProdutoView.listar_id(id)
+        ProdutoView.atualizar(id, p.get_descricao(), p.get_tipo(), p.get_quantidade(), 'Entregue', p.get_id_favorecido())
+
     @staticmethod
     def excluir(id, situacao=None):
         if situacao == 'Em Estoque':

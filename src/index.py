@@ -1,6 +1,6 @@
 import streamlit as st
 from view import DoadorView, FavorecidoView
-from templates import autenticarUI, manterfavorecidoUI, visualizarusuariosUI, reciclagemUI, alterardadosUI, manterdoacaoUI, manterprodutoUI
+from templates import autenticarUI, manterfavorecidoUI, visualizarusuariosUI, reciclagemUI, confirmarUI, alterardadosUI, manterdoacaoUI, manterprodutoUI
 
 class IndexUI:
     def main():
@@ -23,7 +23,7 @@ class IndexUI:
         if 'liberar_fav' not in st.session_state:
             st.session_state.liberar_fav = False
 
-        op = st.sidebar.selectbox('Menu', ['Cadastro de Favorecidos', 'Visualizar Usuários', 'Registrar Reciclagem', 'Atualizar Dados'])
+        op = st.sidebar.selectbox('Menu', ['Cadastro de Favorecidos', 'Visualizar Usuários', 'Registrar Reciclagem', 'Confirmar Doação', 'Atualizar Dados'])
         if op == 'Cadastro de Favorecidos': manterfavorecidoUI.MFUI.main()
         if op == 'Visualizar Usuários':
             st.session_state.liberar_fav = False
@@ -31,6 +31,9 @@ class IndexUI:
         if op == 'Registrar Reciclagem':
             st.session_state.liberar_fav = False
             reciclagemUI.RUI.main()
+        if op == 'Confirmar Doação':
+            st.session_state.liberar_fav = False
+            confirmarUI.CDUI.main()
         if op == 'Atualizar Dados':
             st.session_state.liberar_fav = False
             alterardadosUI.PAUI.main()
@@ -41,8 +44,9 @@ class IndexUI:
         if op == 'Atualizar Dados': alterardadosUI.PDUI.main()
 
     def menu_favorecido():
-        op = st.sidebar.selectbox('Menu', ['Meus Produtos', 'Visualizar Dados'])
+        op = st.sidebar.selectbox('Menu', ['Meus Produtos', 'Confirmar Recebimento' 'Visualizar Dados'])
         if op == 'Meus Produtos': manterprodutoUI.MPUI.main()
+        if op == 'Confirmar Recebimento': confirmarUI.CPUI.main()
         if op == 'Visualizar Dados': alterardadosUI.PFUI.main()
 
     def sair_sistema():
