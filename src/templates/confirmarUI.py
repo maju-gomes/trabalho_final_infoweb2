@@ -14,7 +14,7 @@ class CDUI:
             for d in doacoes:
                 doador = DoadorView.listar_id(d.get_id_doador())
                 cpf = f"{doador.get_cpf()[:3]}.{doador.get_cpf()[3:6]}.{doador.get_cpf()[6:9]}-{doador.get_cpf()[9:]}"
-                opcoes.append(f"{doador.get_nome()} ({cpf}): {d.get_descricao()} - {d.get_tipo()} - {d.get_quantidade_doada()}")
+                opcoes.append(f"{doador.get_nome()} ({cpf}): {d.get_descricao()} - {d.get_tipo()} ({d.get_quantidade_doada()})")
                 mapa.append(d)
             op = st.selectbox('Informe a doação', opcoes)
             submit = st.form_submit_button('Confirmar')

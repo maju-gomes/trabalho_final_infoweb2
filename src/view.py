@@ -21,9 +21,10 @@ class AdminView:
     def inserir(nome, email, senha, cnpj):
         emails = [obj.get_email() for obj in UsuarioView.listar()]
         cnpjs = [obj.get_cnpj() for obj in AdminView.listar()]
-        if email in emails:
+        cnpj_for = ''.join(c for c in cnpj if c.isdigit())
+        if email.strip().lower() in emails:
             raise ValueError('E-mail já cadastrado')
-        if cnpj in cnpjs:
+        if cnpj_for in cnpjs:
             raise ValueError('CNPJ já cadastrado')
         a = Admin(None, nome, email, senha, cnpj)
         AdminDAO.inserir(a)
@@ -43,11 +44,13 @@ class AdminView:
         atual = AdminView.listar_id(id)
         emails = [obj.get_email() for obj in UsuarioView.listar()]
         cnpjs = [obj.get_cnpj() for obj in AdminView.listar()]
-        if email != atual.get_email():
-            if email in emails:
+        cnpj_for = ''.join(c for c in cnpj if c.isdigit())
+        email_for = email.strip().lower()
+        if email_for != atual.get_email():
+            if email_for in emails:
                 raise ValueError('E-mail já cadastrado')
-        if cnpj != atual.get_cnpj():
-            if cnpj in cnpjs:
+        if cnpj_for != atual.get_cnpj():
+            if cnpj_for in cnpjs:
                 raise ValueError('CNPJ já cadastrado')
         a = Admin(id, nome, email, senha, cnpj)
         AdminDAO.atualizar(a)
@@ -77,11 +80,14 @@ class DoadorView:
         emails = [obj.get_email() for obj in UsuarioView.listar()]
         cpfs = [obj.get_cpf() for obj in DoadorView.listar()] + [obj.get_cpf() for obj in FavorecidoView.listar()]
         tels = [obj.get_telefone() for obj in DoadorView.listar()] + [obj.get_telefone() for obj in FavorecidoView.listar()]
-        if email in emails:
+        email_for = email.strip().lower()
+        cpf_for = ''.join(c for c in cpf if c.isdigit())
+        tel_for = ''.join(c for c in tel if c.isdigit())
+        if email_for in emails:
             raise ValueError('E-mail já cadastrado')
-        if cpf in cpfs:
+        if cpf_for in cpfs:
             raise ValueError('CPF já cadastrado')
-        if tel in tels:
+        if tel_for in tels:
             raise ValueError('Telefone já cadastrado')
         d = Doador(None, nome, email, senha, cpf, tel)
         DoadorDAO.inserir(d)
@@ -102,14 +108,17 @@ class DoadorView:
         emails = [obj.get_email() for obj in UsuarioView.listar()]
         cpfs = [obj.get_cpf() for obj in DoadorView.listar()] + [obj.get_cpf() for obj in FavorecidoView.listar()]
         tels = [obj.get_telefone() for obj in DoadorView.listar()] + [obj.get_telefone() for obj in FavorecidoView.listar()]
-        if email != atual.get_email():
-            if email in emails:
+        email_for = ''.join(c for c in email if c.isdigit())
+        cpf_for = ''.join(c for c in cpf if c.isdigit())
+        tel_for = ''.join(c for c in tel if c.isdigit())
+        if email_for != atual.get_email():
+            if email_for in emails:
                 raise ValueError('E-mail já cadastrado')
-        if cpf != atual.get_cpf():
-            if cpf in cpfs:
+        if cpf_for != atual.get_cpf():
+            if cpf_for in cpfs:
                 raise ValueError('CPF já cadastrado')
-        if tel != atual.get_telefone():
-            if tel in tels:
+        if tel_for != atual.get_telefone():
+            if tel_for in tels:
                 raise ValueError('Telefone já cadastrado')
         d = Doador(id, nome, email, senha, cpf, tel)
         DoadorDAO.atualizar(d)
@@ -156,11 +165,14 @@ class FavorecidoView:
         emails = [obj.get_email() for obj in UsuarioView.listar()]
         cpfs = [obj.get_cpf() for obj in DoadorView.listar()] + [obj.get_cpf() for obj in FavorecidoView.listar()]
         tels = [obj.get_telefone() for obj in DoadorView.listar()]
-        if email in emails:
+        email_for = ''.join(c for c in email if c.isdigit())
+        cpf_for = ''.join(c for c in cpf if c.isdigit())
+        tel_for = ''.join(c for c in tel if c.isdigit())
+        if email_for in emails:
             raise ValueError('E-mail já cadastrado')
-        if cpf in cpfs:
+        if cpf_for in cpfs:
             raise ValueError('CPF já cadastrado')
-        if tel in tels:
+        if tel_for in tels:
             raise ValueError('Telefone já cadastrado')
         f = Favorecido(None, nome, email, senha, cpf, tel, i_e)
         FavorecidoDAO.inserir(f)
@@ -181,14 +193,17 @@ class FavorecidoView:
         emails = [obj.get_email() for obj in UsuarioView.listar()]
         cpfs = [obj.get_cpf() for obj in DoadorView.listar()] + [obj.get_cpf() for obj in FavorecidoView.listar()]
         tels = [obj.get_telefone() for obj in DoadorView.listar()]
-        if email != atual.get_email():
-            if email in emails:
+        email_for = ''.join(c for c in email if c.isdigit())
+        cpf_for = ''.join(c for c in cpf if c.isdigit())
+        tel_for = ''.join(c for c in tel if c.isdigit())        
+        if email_for != atual.get_email():
+            if email_for in emails:
                 raise ValueError('E-mail já cadastrado')
-        if cpf != atual.get_cpf():
-            if cpf in cpfs:
+        if cpf_for != atual.get_cpf():
+            if cpf_for in cpfs:
                 raise ValueError('CPF já cadastrado')
-        if tel != atual.get_telefone():
-            if tel in tels:
+        if tel_for != atual.get_telefone():
+            if tel_for in tels:
                 raise ValueError('Telefone já cadastrado')
         f = Favorecido(id, nome, email, senha, cpf, tel, i_e)
         FavorecidoDAO.atualizar(f)

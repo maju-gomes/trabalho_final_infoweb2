@@ -7,12 +7,12 @@ class MFUI:
         st.header('Cadastro de Favorecidos')
         tab1, tab2, tab3 = st.tabs(['Inserir', 'Atualizar', 'Excluir'])
         with tab1:
-            st.session_state.liberar_fav = False
+            # st.session_state.liberar_fav = False
             MFUI.inserir()
         with tab2:
             MFUI.atualizar()
         with tab3:
-            st.session_state.liberar_fav = False
+            # st.session_state.liberar_fav = False
             MFUI.excluir()
             
     def inserir():

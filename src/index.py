@@ -73,7 +73,7 @@ class IndexUI:
                             DoadorView.excluir(id_user)
                         elif AdminView.listar_id(id_user):
                             AdminView.excluir(id_user)
-                        st.success('Conta deletada com sucesso')
+                        st.session_state.confirmar = False
                         IndexUI.sair_sistema()
                     except ValueError as erro:
                         st.error(erro)
