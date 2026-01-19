@@ -6,14 +6,9 @@ class MFUI:
     def main():
         st.header('Cadastro de Favorecidos')
         tab1, tab2, tab3 = st.tabs(['Inserir', 'Atualizar', 'Excluir'])
-        with tab1:
-            # st.session_state.liberar_fav = False
-            MFUI.inserir()
-        with tab2:
-            MFUI.atualizar()
-        with tab3:
-            # st.session_state.liberar_fav = False
-            MFUI.excluir()
+        with tab1: MFUI.inserir()
+        with tab2: MFUI.atualizar()
+        with tab3: MFUI.excluir()
             
     def inserir():
         with st.form('ins_fav'):
@@ -36,6 +31,9 @@ class MFUI:
                 try:
                     i_e = EnderecoView.inserir(cep, uf, ci, ba, rua, num, com)
                     FavorecidoView.inserir(nome, email, senha, cpf, fone, i_e)
+                    for k in list(st.session_state.keys()):
+                        if k.startswith('rec_'):
+                            del st.session_state[k]
                     st.success('Favorecido cadastrado com sucesso')
                 except ValueError as erro:
                     st.error(erro)
@@ -44,7 +42,7 @@ class MFUI:
 
     def atualizar():
         if 'liberar_fav' not in st.session_state:
-            st.session_state.liberar_fav = False
+            st.session_state.liberar_fav = False            
         if not st.session_state.liberar_fav:
             with st.form('autorizar_upd'):
                 email_cpf = st.text_input('Informe o e-mail ou CPF')

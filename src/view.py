@@ -318,7 +318,7 @@ class ProdutoView:
             disp = 0
             usado = 0
             for d in DoacaoView.listar():
-                if d.get_situacao() == None and d.get_descricao() == descricao_doacao:
+                if d.get_situacao() == 'Em Estoque' and d.get_descricao() == descricao_doacao:
                     doacoes.append(d)
                     disp += d.get_quantidade_disponivel()
             if disp < qntd_doacao:
@@ -365,7 +365,7 @@ class ProdutoView:
             disp = 0
             usado = 0
             for d in DoacaoView.listar():
-                if d.get_situacao() == None and d.get_descricao() == descricao_doacao:
+                if d.get_situacao() == 'Em Estoque' and d.get_descricao() == descricao_doacao:
                     doacoes.append(d)
                     disp += d.get_quantidade_disponivel()
             if disp < qntd_doacao:
@@ -404,56 +404,43 @@ class ProdutoView:
         ProdutoView.atualizar(id_produto, descricao, tipo, qntd_nova, situacao, id_favorecido)
 
     @staticmethod
-    def atender_solicitacao(id_solicitacao):
-        sol = ProdutoView.listar_id(id_solicitacao)
-        desc = sol.get_descricao()
+    def atender_solicitacao(id_solicitacao, descricao_doacao, qntd_doacao):
+        doacoes: list[Doacao] = []
+        disp = 0
+        usado = 0
+        for d in DoacaoView.listar():
+            if d.get_situacao() == 'Em Estoque' and d.get_descricao() == descricao_doacao:
+                doacoes.append(d)
+                disp += d.get_quantidade_disponivel()
+        if disp < qntd_doacao:
+            raise ValueError('Quantidade de Doações Indisponível')
+        for d in doacoes:
+            if usado >= qntd_doacao:
+                break
+            disponivel = d.get_quantidade_disponivel()
+            falta = qntd_doacao - usado
+            if disponivel <= falta:
+                usado += disponivel
+                nova_disp = 0
+                situacao_doacao = 'Usada'
+            else:
+                usado += falta
+                nova_disp = disponivel - falta
+                situacao_doacao = 'Em Estoque'
+            DoacaoView.atualizar(
+                d.get_id(),
+                d.get_descricao(),
+                d.get_tipo(),
+                d.get_quantidade_doada(),
+                nova_disp,
+                situacao_doacao,
+                d.get_id_doador()
+            )
+        sol = ProdutoView.listar_id(id_solicitacao)  
+        desc = sol.get_descricao()          
         tipo = sol.get_tipo()
         quantidade = sol.get_quantidade()
         id_fav = sol.get_id_favorecido()
-        produtos_estoque = []
-        disp = 0
-        for p in ProdutoView.listar():
-            if (p.get_situacao() == 'Em Estoque'
-                and p.get_descricao() == desc
-                and p.get_tipo() == tipo
-                and p.get_id_favorecido() is None):
-                produtos_estoque.append(p)
-                disp += p.get_quantidade()
-        if disp < quantidade:
-            raise ValueError('Quantidade insuficiente em estoque')
-        usado = 0
-        for p in produtos_estoque:
-            if usado >= quantidade:
-                break
-            disponivel = p.get_quantidade()
-            falta = quantidade - usado
-            if disponivel <= falta:
-                usado += disponivel
-                ProdutoView.atualizar(
-                    p.get_id(),
-                    p.get_descricao(),
-                    p.get_tipo(),
-                    disponivel,
-                    'Em Entrega',
-                    id_fav
-                )
-            else:
-                usado += falta
-                ProdutoView.atualizar(
-                    p.get_id(),
-                    p.get_descricao(),
-                    p.get_tipo(),
-                    disponivel - falta,
-                    'Em Estoque',
-                    None
-                )
-                ProdutoView.inserir(
-                    p.get_descricao(),
-                    p.get_tipo(),
-                    falta,
-                    'Em Entrega',
-                    id_fav
-                )
         ProdutoView.atualizar(
             sol.get_id(),
             desc,

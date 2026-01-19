@@ -13,7 +13,7 @@ class RUI:
         with tab4: RUI.enviar()
 
     def solicitacoes():
-        produtos = [p for p in ProdutoView.listar() if p.get_situacao() != 'Entregue']
+        produtos = [p for p in ProdutoView.listar() if not (p.get_situacao() == 'Em Estoque' and p.get_id_favorecido() == None)]
         list_dic = []
         if not produtos:
             st.write('Nenhum produto solicitado')
@@ -69,11 +69,14 @@ class RUI:
                 df = pd.DataFrame(list_dic_pr)
                 st.dataframe(df)
 
-    def reciclar():
+    def reciclar():  
         doacoes = [d for d in DoacaoView.listar() if d.get_situacao() == 'Em Estoque']
         if not doacoes:
             st.write('Nenhuma doação em estoque')
             return
+        if not 'modo_reciclar' in st.session_state:
+            st.session_state.modo_reciclar = 'Atender Solicitação'
+        modo = st.radio('Modo', ['Atender Solicitação', 'Novo Produto'], key='modo_reciclar')
         with st.form('ins_produto'):
             opcoes_do = [f"{d.get_descricao()} - {d.get_tipo()} ({d.get_quantidade_disponivel()})" for d in doacoes]
             op_do = st.selectbox('Informe a doação', opcoes_do)
@@ -81,13 +84,18 @@ class RUI:
             desc_do = doacao.get_descricao()
             qntd_di = doacao.get_quantidade_disponivel()
             qntd_usar = st.number_input('Informe a quantidade a ser utilizada', min_value=1, max_value=qntd_di, step=1)
-            modo = st.radio('Modo', ['Atender Solicitação', 'Novo Produto'])
-            if modo == 'Atender Solicitação':
+            if st.session_state.modo_reciclar == 'Atender Solicitação':
                 produtos = [p for p in ProdutoView.listar() if p.get_situacao() == 'Solicitado']
                 if not produtos:
                     st.write('Nenhuma solicitação pendente')
+                    dis = True
                 else:
-                    opcoes_pr = [f"{p.get_id_favorecido()} - {p.get_descricao()} ({p.get_quantidade()})" for p in produtos]
+                    dis = False
+                    opcoes_pr = []
+                    for p in produtos:
+                        fav = FavorecidoView.listar_id(p.get_id_favorecido())
+                        cpf = f"{fav.get_cpf()[:3]}.{fav.get_cpf()[3:6]}.{fav.get_cpf()[6:9]}-{fav.get_cpf()[9:]}"
+                        opcoes_pr.append(f"{fav.get_nome()} ({cpf}) - {p.get_descricao()} ({p.get_quantidade()})")
                     op_pr = st.selectbox('Escolha a solicitação', opcoes_pr)
                     produto = produtos[opcoes_pr.index(op_pr)]
                     id_sol = produto.get_id()
@@ -97,20 +105,22 @@ class RUI:
                     st.text_input('Produto', f'{desc_pr} - {tipo_pr}', disabled=True)
                     st.text_input('Quantidade', str(qntd_pr), disabled=True)
             else:
+                dis = False
                 desc_pr = st.text_input('Informe a descrição', key='ins_produto_desc')
                 tipo_pr = st.text_input('Informe o tipo', key='ins_produto_tipo')
                 qntd_pr = st.number_input('Informe a quantidade', min_value=1, step=1)
-                id_sol = None
-            submit = st.form_submit_button('Reciclar')
+            submit = st.form_submit_button('Reciclar', disabled=dis)
             if submit:
                 try:
                     if modo == 'Atender Solicitação':
-                        ProdutoView.atender_solicitacao(id_sol)
+                        ProdutoView.atender_solicitacao(id_sol, desc_do, qntd_usar)
                     else:
-                        ProdutoView.inserir(desc_do, qntd_usar, desc_pr, tipo_pr, qntd_pr, 'Em Estoque', None)
+                        ProdutoView.inserir(desc_pr, tipo_pr, qntd_pr, 'Em Estoque', None, desc_do, qntd_usar)
                     st.success('Doação reciclada com sucesso')
                 except ValueError as erro:
                     st.error(erro)
+                time.sleep(2)
+                st.rerun()
 
 
     def enviar():
