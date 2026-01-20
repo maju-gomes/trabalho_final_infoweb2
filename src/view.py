@@ -437,6 +437,15 @@ class ProdutoView:
                     situacao_doacao,
                     d.get_id_doador()
                 )
+            sol = ProdutoView.listar_id(id_solicitacao)
+            ProdutoView.atualizar(
+                sol.get_id(),
+                sol.get_descricao(),
+                sol.get_tipo(),
+                sol.get_quantidade(),
+                situacao,
+                sol.get_id_favorecido()
+            )   
         elif situacao == 'Em Entrega':
             produtos = []
             disp = 0
@@ -519,7 +528,7 @@ class ProdutoView:
                             'Em Estoque',
                             None
                         )
-        ProdutoView.excluir(id_solicitacao)
+            ProdutoView.excluir(id_solicitacao)
 
     @staticmethod
     def confirmar(id):
