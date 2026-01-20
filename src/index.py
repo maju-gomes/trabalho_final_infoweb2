@@ -1,6 +1,6 @@
 import streamlit as st
 from dao.database import Database
-from view import DoadorView, FavorecidoView, AdminView
+from view.view import DoadorView, FavorecidoView, AdminView
 from templates import autenticarUI, manterfavorecidoUI, visualizarusuariosUI, reciclagemUI, confirmarUI, alterardadosUI, manterdoacaoUI, manterprodutoUI
 
 class IndexUI:

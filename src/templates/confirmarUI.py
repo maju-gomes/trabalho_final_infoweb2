@@ -1,6 +1,6 @@
 import streamlit as st
 import time
-from view import DoacaoView, ProdutoView, DoadorView
+from view.view import DoacaoView, ProdutoView, DoadorView
 
 class CDUI:
     def main():

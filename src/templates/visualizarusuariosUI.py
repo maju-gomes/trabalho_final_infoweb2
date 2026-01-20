@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from view import DoadorView, FavorecidoView, EnderecoView, DoacaoView
+from view.view import DoadorView, FavorecidoView, EnderecoView, DoacaoView
 
 class VUUI:
     def main():

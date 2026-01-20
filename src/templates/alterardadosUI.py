@@ -1,6 +1,6 @@
 import streamlit as st
 import time
-from view import AdminView, DoadorView, FavorecidoView, EnderecoView
+from view.view import AdminView, DoadorView, FavorecidoView, EnderecoView
 
 class PAUI:
     def main():

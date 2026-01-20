@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import time
-from view import DoacaoView, ProdutoView, FavorecidoView, EnderecoView
+from view.view import DoacaoView, ProdutoView, FavorecidoView, EnderecoView
 
 class RUI:
     def main():

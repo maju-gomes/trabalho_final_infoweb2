@@ -1,6 +1,6 @@
 import streamlit as st
 import time
-from view import AdminView, FavorecidoView, DoadorView
+from view.view import AdminView, FavorecidoView, DoadorView
 
 class FLUI:
     def main():

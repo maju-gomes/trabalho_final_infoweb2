@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import time
-from view import ProdutoView
+from view.view import ProdutoView
 
 class MPUI:
     def main():

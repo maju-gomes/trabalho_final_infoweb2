@@ -1,6 +1,6 @@
 import streamlit as st
 import time
-from view import FavorecidoView, EnderecoView
+from view.view import FavorecidoView, EnderecoView
 
 class MFUI:
     def main():

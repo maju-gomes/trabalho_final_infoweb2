@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import time
-from view import DoacaoView
+from view.view import DoacaoView
 
 class MDUI:
     def main():
