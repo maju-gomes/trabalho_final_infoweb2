@@ -2,12 +2,12 @@ import streamlit as st
 import pandas as pd
 from view.view import DoadorView, FavorecidoView, EnderecoView, DoacaoView
 
-class VUUI:
+class VisualizarUsuariosUI:
     def main():
         st.header('Visualizar Usuários')
         tab1, tab2 = st.tabs(['Favorecidos', 'Doadores'])
-        with tab1: VUUI.favorecidos()
-        with tab2: VUUI.doadores()
+        with tab1: VisualizarUsuariosUI.favorecidos()
+        with tab2: VisualizarUsuariosUI.doadores()
 
     def favorecidos():
         fav = FavorecidoView.listar()

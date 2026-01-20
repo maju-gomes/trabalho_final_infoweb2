@@ -2,7 +2,7 @@ import streamlit as st
 import time
 from view.view import AdminView, FavorecidoView, DoadorView
 
-class FLUI:
+class FazerLoginUI:
     def main():
         st.header('Entrar no Sistema')
         with st.form('entrar_sistema'):
@@ -18,7 +18,7 @@ class FLUI:
                 else:
                     st.write('E-mail ou senha inválidos')
 
-class CCUI:
+class CriarContaUI:
     def main():
         st.header('Criar Conta no Sistema')
         with st.form('criar_conta'):
@@ -37,7 +37,7 @@ class CCUI:
                 time.sleep(2)
                 st.rerun()
 
-class CAUI:
+class CadastroAdminUI:
     def main():
         st.header('Cadastro de Administrador')
         if not st.session_state.liberar_admin:

@@ -2,7 +2,7 @@ import streamlit as st
 import time
 from view.view import DoacaoView, ProdutoView, DoadorView
 
-class CDUI:
+class ConfirmarDoacaoUI:
     def main():
         st.header('Confirmar Doação')
         doacoes = [d for d in DoacaoView.listar() if d.get_situacao() == 'Pendente']
@@ -28,7 +28,7 @@ class CDUI:
                 time.sleep(2)
                 st.rerun()
 
-class CPUI:
+class ConfirmarProdutoUI:
     def main():
         st.header('Confirmar Recebimento')
         i_f = st.session_state['id_usuario']

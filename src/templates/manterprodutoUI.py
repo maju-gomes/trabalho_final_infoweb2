@@ -3,14 +3,14 @@ import pandas as pd
 import time
 from view.view import ProdutoView
 
-class MPUI:
+class ManterProdutoUI:
     def main():
         st.header('Produtos')
         tab1, tab2, tab3, tab4 = st.tabs(['Listar', 'Solicitar', 'Atualizar', 'Cancelar'])
-        with tab1: MPUI.listar()
-        with tab2: MPUI.solicitar()
-        with tab3: MPUI.atualizar()
-        with tab4: MPUI.cancelar()
+        with tab1: ManterProdutoUI.listar()
+        with tab2: ManterProdutoUI.solicitar()
+        with tab3: ManterProdutoUI.atualizar()
+        with tab4: ManterProdutoUI.cancelar()
 
     def listar():
         i_f = st.session_state['id_usuario']

@@ -3,14 +3,14 @@ import pandas as pd
 import time
 from view.view import DoacaoView, ProdutoView, FavorecidoView, EnderecoView
 
-class RUI:
+class ReciclagemUI:
     def main():
         st.header('Reciclar')
         tab1, tab2, tab3, tab4 = st.tabs(['Solicitações', 'Estoque', 'Reciclar', 'Enviar'])
-        with tab1: RUI.solicitacoes()
-        with tab2: RUI.estoque()
-        with tab3: RUI.reciclar()
-        with tab4: RUI.enviar()
+        with tab1: ReciclagemUI.solicitacoes()
+        with tab2: ReciclagemUI.estoque()
+        with tab3: ReciclagemUI.reciclar()
+        with tab4: ReciclagemUI.enviar()
 
     def solicitacoes():
         produtos = [p for p in ProdutoView.listar() if not (p.get_situacao() == 'Em Estoque' and p.get_id_favorecido() is None)]

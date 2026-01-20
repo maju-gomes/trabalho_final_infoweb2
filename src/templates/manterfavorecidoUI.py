@@ -2,13 +2,13 @@ import streamlit as st
 import time
 from view.view import FavorecidoView, EnderecoView
 
-class MFUI:
+class ManterFavorecidoUI:
     def main():
         st.header('Cadastro de Favorecidos')
         tab1, tab2, tab3 = st.tabs(['Inserir', 'Atualizar', 'Excluir'])
-        with tab1: MFUI.inserir()
-        with tab2: MFUI.atualizar()
-        with tab3: MFUI.excluir()
+        with tab1: ManterFavorecidoUI.inserir()
+        with tab2: ManterFavorecidoUI.atualizar()
+        with tab3: ManterFavorecidoUI.excluir()
             
     def inserir():
         with st.form('ins_fav'):

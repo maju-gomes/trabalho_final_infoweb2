@@ -1,6 +1,6 @@
 import streamlit as st
 from dao.database import Database
-from view.view import DoadorView, FavorecidoView, AdminView
+from view.view import DoadorView, AdminView
 from templates import autenticarUI, manterfavorecidoUI, visualizarusuariosUI, reciclagemUI, confirmarUI, alterardadosUI, manterdoacaoUI, manterprodutoUI
 
 class IndexUI:
@@ -17,11 +17,11 @@ class IndexUI:
         op = st.sidebar.selectbox('Menu', ['Entrar no Sistema', 'Criar Conta', 'Cadastro de Administrador'])
         if op == 'Entrar no Sistema':
             st.session_state.liberar_admin = False
-            autenticarUI.FLUI.main()
+            autenticarUI.FazerLoginUI.main()
         if op == 'Criar Conta':
             st.session_state.liberar_admin = False
-            autenticarUI.CCUI.main()
-        if op == 'Cadastro de Administrador': autenticarUI.CAUI.main()
+            autenticarUI.CriarContaUI.main()
+        if op == 'Cadastro de Administrador': autenticarUI.CadastroAdminUI.main()
 
     def menu_admin():
         if 'liberar_fav' not in st.session_state:
@@ -30,29 +30,29 @@ class IndexUI:
         op = st.sidebar.selectbox('Menu', ['Registrar Reciclagem', 'Confirmar Doação', 'Visualizar Usuários', 'Cadastro de Favorecidos', 'Atualizar Dados'])
         if op == 'Registrar Reciclagem':
             st.session_state.liberar_fav = False
-            reciclagemUI.RUI.main()
+            reciclagemUI.ReciclagemUI.main()
         if op == 'Confirmar Doação':
             st.session_state.liberar_fav = False
-            confirmarUI.CDUI.main()
+            confirmarUI.ConfirmarDoacaoUI.main()
         if op == 'Visualizar Usuários':
             st.session_state.liberar_fav = False
-            visualizarusuariosUI.VUUI.main()
+            visualizarusuariosUI.VisualizarUsuariosUI.main()
         if op == 'Cadastro de Favorecidos':
-            manterfavorecidoUI.MFUI.main()
+            manterfavorecidoUI.ManterFavorecidoUI.main()
         if op == 'Atualizar Dados':
             st.session_state.liberar_fav = False
-            alterardadosUI.PAUI.main()
+            alterardadosUI.PerfilAdminUI.main()
 
     def menu_doador():
         op = st.sidebar.selectbox('Menu', ['Cadastro de Doações', 'Atualizar Dados'])
-        if op == 'Cadastro de Doações': manterdoacaoUI.MDUI.main()
-        if op == 'Atualizar Dados': alterardadosUI.PDUI.main()
+        if op == 'Cadastro de Doações': manterdoacaoUI.ManterDoacaoUI.main()
+        if op == 'Atualizar Dados': alterardadosUI.PerfilDoadorUI.main()
 
     def menu_favorecido():
         op = st.sidebar.selectbox('Menu', ['Meus Produtos', 'Confirmar Recebimento' ,'Visualizar Dados'])
-        if op == 'Meus Produtos': manterprodutoUI.MPUI.main()
-        if op == 'Confirmar Recebimento': confirmarUI.CPUI.main()
-        if op == 'Visualizar Dados': alterardadosUI.PFUI.main()
+        if op == 'Meus Produtos': manterprodutoUI.ManterProdutoUI.main()
+        if op == 'Confirmar Recebimento': confirmarUI.ConfirmarProdutoUI.main()
+        if op == 'Visualizar Dados': alterardadosUI.PerfilFavorecidoUI.main()
 
     def deletar_conta():
         if 'confirmar' not in st.session_state:

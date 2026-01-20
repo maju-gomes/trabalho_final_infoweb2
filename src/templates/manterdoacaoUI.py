@@ -3,14 +3,14 @@ import pandas as pd
 import time
 from view.view import DoacaoView
 
-class MDUI:
+class ManterDoacaoUI:
     def main():
         st.header('Doações')
         tab1, tab2, tab3, tab4 = st.tabs(['Listar', 'Doar', 'Atualizar', 'Cancelar'])
-        with tab1: MDUI.listar()
-        with tab2: MDUI.doar()
-        with tab3: MDUI.atualizar()
-        with tab4: MDUI.cancelar()
+        with tab1: ManterDoacaoUI.listar()
+        with tab2: ManterDoacaoUI.doar()
+        with tab3: ManterDoacaoUI.atualizar()
+        with tab4: ManterDoacaoUI.cancelar()
     
     def listar():
         i_d = st.session_state['id_usuario']

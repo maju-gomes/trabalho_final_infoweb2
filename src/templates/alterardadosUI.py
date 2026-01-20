@@ -2,7 +2,7 @@ import streamlit as st
 import time
 from view.view import AdminView, DoadorView, FavorecidoView, EnderecoView
 
-class PAUI:
+class PerfilAdminUI:
     def main():
         st.header('Meus Dados')
         with st.form('upd_admin'):
@@ -23,7 +23,7 @@ class PAUI:
                 time.sleep(2)
                 st.rerun()
 
-class PDUI:
+class PerfilDoadorUI:
     def main():
         st.header('Meus Dados')
         with st.form('upd_doador'):
@@ -45,7 +45,7 @@ class PDUI:
                 time.sleep(2)
                 st.rerun()
 
-class PFUI:
+class PerfilFavorecidoUI:
     def main():
         st.header('Meus Dados')
         st.warning('Atualização de dados apenas em nossas agências de cadastro de favorecidos')
