@@ -34,6 +34,8 @@ class CCUI:
                     st.success('Conta criada com sucesso')
                 except ValueError as erro:
                     st.error(erro)
+                time.sleep(2)
+                st.rerun()
 
 class CAUI:
     def main():

@@ -13,7 +13,7 @@ class RUI:
         with tab4: RUI.enviar()
 
     def solicitacoes():
-        produtos = [p for p in ProdutoView.listar() if not (p.get_situacao() == 'Em Estoque' and p.get_id_favorecido() == None)]
+        produtos = [p for p in ProdutoView.listar() if not (p.get_situacao() == 'Em Estoque' and p.get_id_favorecido() is None)]
         list_dic = []
         if not produtos:
             st.write('Nenhum produto solicitado')
@@ -76,13 +76,22 @@ class RUI:
             return
         if not 'modo_reciclar' in st.session_state:
             st.session_state.modo_reciclar = 'Atender Solicitação'
-        modo = st.radio('Modo', ['Atender Solicitação', 'Novo Produto'], key='modo_reciclar')
+        st.radio('Modo', ['Atender Solicitação', 'Novo Produto'], key='modo_reciclar')
         with st.form('ins_produto'):
-            opcoes_do = [f"{d.get_descricao()} - {d.get_tipo()} ({d.get_quantidade_disponivel()})" for d in doacoes]
-            op_do = st.selectbox('Informe a doação', opcoes_do)
-            doacao = doacoes[opcoes_do.index(op_do)]
-            desc_do = doacao.get_descricao()
-            qntd_di = doacao.get_quantidade_disponivel()
+            opcoes_do = []
+            i = {}
+            for d in doacoes:
+                chave = (d.get_descricao(), d.get_tipo())
+                i[chave] = i.get(chave, 0) + d.get_quantidade_disponivel()
+            for (desc, tipo), qntd in i.items():
+                opcoes_do.append({
+                    'd':desc,
+                    't':tipo,
+                    'q':qntd
+                })            
+            op_do = st.selectbox('Informe a doação', opcoes_do, format_func=lambda x:f"{x['d']} - {x['t']} ({x['q']})")
+            qntd_di = op_do['q']
+            desc_do = op_do['d']          
             qntd_usar = st.number_input('Informe a quantidade a ser utilizada', min_value=1, max_value=qntd_di, step=1)
             if st.session_state.modo_reciclar == 'Atender Solicitação':
                 produtos = [p for p in ProdutoView.listar() if p.get_situacao() == 'Solicitado']
@@ -112,8 +121,8 @@ class RUI:
             submit = st.form_submit_button('Reciclar', disabled=dis)
             if submit:
                 try:
-                    if modo == 'Atender Solicitação':
-                        ProdutoView.atender_solicitacao(id_sol, desc_do, qntd_usar)
+                    if st.session_state.modo_reciclar == 'Atender Solicitação':
+                        ProdutoView.atender_solicitacao(id_sol, 'Em Estoque', desc_do, qntd_usar)
                     else:
                         ProdutoView.inserir(desc_pr, tipo_pr, qntd_pr, 'Em Estoque', None, desc_do, qntd_usar)
                     st.success('Doação reciclada com sucesso')
@@ -122,38 +131,61 @@ class RUI:
                 time.sleep(2)
                 st.rerun()
 
-
     def enviar():
-        sols = [p for p in ProdutoView.listar() if p.get_id_favorecido() != None]
+        sols = [p for p in ProdutoView.listar() if p.get_situacao() in ['Solicitado', 'Em Estoque'] and p.get_id_favorecido() is not None]
         if not sols:
-            st.write('Nenhuma solicitação em aberto')
+            st.write('Nenhuma solicitação pendente')
             return
         with st.form('enviar_produto'):
-            opcoes, ends = [], []
+            opcoes_sol, ends = [], []
             for s in sols:
                 fav = FavorecidoView.listar_id(s.get_id_favorecido())
                 cpf = f"{fav.get_cpf()[:3]}.{fav.get_cpf()[3:6]}.{fav.get_cpf()[6:9]}-{fav.get_cpf()[9:]}"
                 ends.append(EnderecoView.listar_id(fav.get_id_endereco()))
                 nome = f"{fav.get_nome()} ({cpf})"
-                opcoes.append(f'{nome} - {s.get_descricao()} - {s.get_tipo()} ({s.get_quantidade()})')
-            op = st.selectbox('Informe a solicitação', opcoes)
-            index = opcoes.index(op)
+                opcoes_sol.append(f'{nome} - {s.get_descricao()} - {s.get_tipo()} ({s.get_quantidade()})')
+            op_sol = st.selectbox('Informe a solicitação', opcoes_sol)
+            index = opcoes_sol.index(op_sol)
             pro = sols[index]
+            id_sol = pro.get_id()
             end = ends[index]
-            qntd = 0 if pro.get_situacao() == 'Solicitado' else pro.get_quantidade()
-            st.text_input('Produto', f'{pro.get_descricao()} - {pro.get_tipo()}', disabled=True)
-            st.number_input('Quantidade', qntd, disabled=True)
             cep = f"{end.get_cep()[:5]}-{end.get_cep()[5:]}"
             e = f"{end.get_rua()}, {end.get_numero()} - {end.get_bairro()}, {end.get_cidade()}/{end.get_uf()} | CEP: {cep}"
             if end.get_complemento():
                 e += f" | {end.get_complemento()}"
             st.text_input('Endereço', e, disabled=True)
-            submit = st.form_submit_button('Enviar')
+            if pro.get_situacao() == 'Em Estoque':
+                st.text_input('Produto', f"{pro.get_descricao()} - {pro.get_tipo()}" , disabled=True)
+                st.number_input('Quantidade', pro.get_quantidade(), disabled=True)
+                dis = False
+            else:
+                produtos = [p for p in ProdutoView.listar() if p.get_situacao() == 'Em Estoque' and p.get_id_favorecido() is None and p.get_descricao() == pro.get_descricao() and p.get_tipo() == pro.get_tipo()]
+                if not produtos:
+                    st.write('Produto indisponível em estoque')
+                    dis = True
+                else:
+                    dis = False
+                    opcoes_pro = []
+                    qntd_total = sum(p.get_quantidade() for p in produtos)
+                    opcoes_pro.append({
+                        'd':pro.get_descricao(),
+                        't':pro.get_tipo(),
+                        'q':qntd_total
+                    })
+                    op_pro = opcoes_pro[0]
+                    if op_pro['q'] < pro.get_quantidade():
+                        st.write('Estoque insuficiente')
+                        dis = True
+                    else:
+                        op_pro = st.selectbox('Produto', opcoes_pro, format_func=lambda x:f"{x['d']} - {x['t']} ({x['q']})", disabled=True)
+                        qntd_pro = st.number_input('Quantidade', pro.get_quantidade(), disabled=True)
+                        desc_pro = pro.get_descricao()
+            submit = st.form_submit_button('Enviar', disabled=dis)
             if submit:
                 try:
                     if pro.get_situacao() == 'Em Estoque':
                         ProdutoView.atualizar(
-                            pro.get_id(),
+                            id_sol,
                             pro.get_descricao(),
                             pro.get_tipo(),
                             pro.get_quantidade(),
@@ -161,7 +193,7 @@ class RUI:
                             pro.get_id_favorecido()
                         )
                     else:
-                        ProdutoView.atender_solicitacao(pro.get_id())
+                        ProdutoView.atender_solicitacao(id_sol, 'Em Entrega', desc_pro, qntd_pro)
                     st.success('Produto enviado com sucesso')
                 except ValueError as erro:
                     st.error(erro)

@@ -34,7 +34,7 @@ class CPUI:
         i_f = st.session_state['id_usuario']
         produtos = [p for p in ProdutoView.listar() if p.get_id_favorecido() == i_f and p.get_situacao() == 'Em Entrega']
         if not produtos:
-            st.write('Nenhum produto solicitado em rota de entrega')
+            st.write('Nenhum produto em rota de entrega')
             return
         with st.form('conf_produto'):
             opcoes, mapa = [], []

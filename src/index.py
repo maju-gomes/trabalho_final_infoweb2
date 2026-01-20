@@ -27,16 +27,16 @@ class IndexUI:
         if 'liberar_fav' not in st.session_state:
             st.session_state.liberar_fav = False
 
-        op = st.sidebar.selectbox('Menu', ['Registrar Reciclagem', 'Visualizar Usuários', 'Confirmar Doação', 'Cadastro de Favorecidos', 'Atualizar Dados'])
+        op = st.sidebar.selectbox('Menu', ['Registrar Reciclagem', 'Confirmar Doação', 'Visualizar Usuários', 'Cadastro de Favorecidos', 'Atualizar Dados'])
         if op == 'Registrar Reciclagem':
             st.session_state.liberar_fav = False
             reciclagemUI.RUI.main()
-        if op == 'Visualizar Usuários':
-            st.session_state.liberar_fav = False
-            visualizarusuariosUI.VUUI.main()
         if op == 'Confirmar Doação':
             st.session_state.liberar_fav = False
             confirmarUI.CDUI.main()
+        if op == 'Visualizar Usuários':
+            st.session_state.liberar_fav = False
+            visualizarusuariosUI.VUUI.main()
         if op == 'Cadastro de Favorecidos':
             manterfavorecidoUI.MFUI.main()
         if op == 'Atualizar Dados':
