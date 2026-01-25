@@ -1,4 +1,3 @@
-
 -- cria uma tabela ENDERECO, caso ainda não exista uma
 CREATE TABLE IF NOT EXISTS endereco (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
