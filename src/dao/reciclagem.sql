@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS doacao (
     descricao VARCHAR(50) NOT NULL,
     tipo VARCHAR(50) NOT NULL,
     quantidade_doada INTEGER NOT NULL,
-    quantidade_disponivel INTEGER NOT NULL
+    quantidade_disponivel INTEGER NOT NULL,
     situacao VARCHAR(15) NULL,
     id_doador INTEGER NULL,
     FOREIGN KEY (id_doador) REFERENCES doador (id_usuario)
